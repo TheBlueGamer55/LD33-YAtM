@@ -5,10 +5,18 @@ import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
+import com.badlogic.gdx.Gdx;
+
 public class Tower{
 
 	public float x, y;
+	
 	public final int RADIUS = 80; //TODO should this be final?
+	public final float SHOT_MAGNITUDE = 4.0f; //How strong a tower shoots a projectile
+	public final float SHOT_LIFETIME = 0.2f; //How long a projectile lasts
+	
+	public final float SHOT_RATE = 6; //Shots per second
+	public float shotTimer, maxShotTimer;
 
 	public boolean isActive;
 
@@ -25,6 +33,8 @@ public class Tower{
 		isActive = true;
 		this.level = level;
 		type = "Tower";
+		shotTimer = 0;
+		maxShotTimer = 1f / SHOT_RATE;
 		//towerSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
 		//adjustSprite(towerSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
@@ -43,10 +53,13 @@ public class Tower{
 
 	public void update(float delta){		
 		findNearestMob();
-		//shootNearestMob();
-		//TODO debug code - remove later
-		if(nearestMob != null){
-			System.out.println(nearestMob.id);
+		//Only start shooting if nearest mob is in range
+		if(nearestMob != null && distanceTo(nearestMob.hitbox) <= RADIUS ){ 
+			shotTimer += delta;
+			if(shotTimer > maxShotTimer){
+				shootNearestMob();
+				shotTimer = 0;
+			}
 		}
 	}
 
@@ -66,7 +79,16 @@ public class Tower{
 	}
 	
 	public void shootNearestMob(){
-		//TODO shoot the nearest mob
+		float targetX = nearestMob.x;
+		float targetY = nearestMob.y;
+		float deltaX = targetX - this.x;
+		float deltaY = targetY - this.y;
+		float theta = (float) Math.atan2(deltaY, deltaX); //angle from player to mouse
+		
+		float vectorX = (float) Math.cos(theta) * SHOT_MAGNITUDE;
+		float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;
+		Projectile p = new Projectile(x, y, vectorX, vectorY, SHOT_LIFETIME, level);
+		level.projectiles.add(p);
 	}
 
 	/*

@@ -30,6 +30,8 @@ public class Gameplay implements GameScreen{
 
 	private TiledMap map;
 	
+	public float camX, camY;
+	
 	@Override
 	public int getId(){
 		return ID;
@@ -59,22 +61,6 @@ public class Gameplay implements GameScreen{
 	}
 
 	@Override
-	public void interpolate(GameContainer gc, float delta){
-	}
-	
-	@Override
-	public void onPause() {
-	}
-
-	@Override
-	public void onResize(int arg0, int arg1) {
-	}
-
-	@Override
-	public void onResume() {
-	}
-
-	@Override
 	public void postTransitionIn(Transition t){
 		
 	}
@@ -86,7 +72,9 @@ public class Gameplay implements GameScreen{
 
 	@Override
 	public void preTransitionIn(Transition t){
-		
+		//TODO change values later
+		camX = 0;
+		camY = 0;
 	}
 
 	@Override
@@ -96,6 +84,7 @@ public class Gameplay implements GameScreen{
 
 	@Override
 	public void render(GameContainer gc, Graphics g){
+		g.translate((float) Math.round(camX), (float) Math.round(camY)); //Camera movement
 		g.drawString("This is the gameplay", 320, 240);
 		renderMobs(g);
 		renderTowers(g);
@@ -110,6 +99,13 @@ public class Gameplay implements GameScreen{
 		
 		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){
 			sm.enterGameScreen(MainMenu.ID, new FadeOutTransition(), new FadeInTransition());
+		}
+		//TODO debug code to move camera
+		if(Gdx.input.isKeyPressed(Keys.D)){
+			camX++;
+		}
+		if(Gdx.input.isKeyPressed(Keys.A)){
+			camX--;
 		}
 	}
 	
@@ -166,6 +162,22 @@ public class Gameplay implements GameScreen{
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void interpolate(GameContainer gc, float delta){
+	}
+	
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onResize(int arg0, int arg1) {
+	}
+
+	@Override
+	public void onResume() {
 	}
 
 }
