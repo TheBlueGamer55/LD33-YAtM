@@ -12,6 +12,7 @@ public class DesktopLauncher {
 		config.width = 640;
 		config.height = 480;
 		config.vSyncEnabled = true;
+		config.resizable = false;
         config.foregroundFPS = 60;
         config.backgroundFPS = 60;
 		new LwjglApplication(new DesktopMini2DxGame(YouAreMonster.GAME_IDENTIFIER, new YouAreMonster()), config);
