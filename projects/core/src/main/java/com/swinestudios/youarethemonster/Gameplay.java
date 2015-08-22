@@ -19,6 +19,8 @@ public class Gameplay implements GameScreen{
 	
 	public ArrayList<Mob> mobs;
 	public ArrayList<Tower> towers;
+	public ArrayList<Projectile> projectiles;
+	
 	public Tower tempTower;
 	public Mob mob1, mob2, mob3;
 	
@@ -31,6 +33,7 @@ public class Gameplay implements GameScreen{
 	public void initialise(GameContainer gc){
 		mobs = new ArrayList<Mob>();
 		towers = new ArrayList<Tower>();
+		projectiles = new ArrayList<Projectile>();
 		//TODO temporary code for testing
 		tempTower = new Tower(320, 250, this);
 		towers.add(tempTower);
@@ -83,12 +86,14 @@ public class Gameplay implements GameScreen{
 		g.drawString("This is the gameplay", 320, 240);
 		renderMobs(g);
 		renderTowers(g);
+		renderProjectiles(g);
 	}
 
 	@Override
 	public void update(GameContainer gc, ScreenManager<? extends GameScreen> sm, float delta){
 		updateMobs(delta);
 		updateTowers(delta);
+		updateProjectiles(delta);
 		
 		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){
 			sm.enterGameScreen(MainMenu.ID, new FadeOutTransition(), new FadeInTransition());
@@ -116,6 +121,18 @@ public class Gameplay implements GameScreen{
 	public void updateMobs(float delta){
 		for(int i = 0; i < mobs.size(); i++){
 			mobs.get(i).update(delta);
+		}
+	}
+	
+	public void renderProjectiles(Graphics g){
+		for(int i = 0; i < projectiles.size(); i++){
+			projectiles.get(i).render(g);
+		}
+	}
+	
+	public void updateProjectiles(float delta){
+		for(int i = 0; i < projectiles.size(); i++){
+			projectiles.get(i).update(delta);
 		}
 	}
 

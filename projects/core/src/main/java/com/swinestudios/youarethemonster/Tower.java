@@ -34,7 +34,7 @@ public class Tower{
 		if(towerSprite != null){
 			g.drawSprite(towerSprite, x, y);
 		}
-		else{ //TODO Temporary rectangle placeholder
+		else{ //TODO Temporary shape placeholder
 			g.drawCircle(x,  y, RADIUS / 4);
 			g.drawCircle(x,  y, RADIUS);
 		}

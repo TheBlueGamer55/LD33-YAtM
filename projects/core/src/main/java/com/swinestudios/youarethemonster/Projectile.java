@@ -5,53 +5,61 @@ import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
-public class Mob{
-	
-	public static int mobcount = 0;
-	public int id;
+public class Projectile{
 
 	public float x, y, velX, velY;
-	public final int RADIUS = 8; //TODO should this be final?
+	public float lifeTimer = 0, maxLifeTimer; //For how long does this projectile last
+	public final int RADIUS = 2; //TODO should this be final?
 
 	public boolean isActive;
 
 	public Circle hitbox;
 	public Gameplay level;
 	public String type;
-	public Sprite mobSprite;
+	public Sprite projectileSprite;
 
-	public Mob(float x, float y, Gameplay level){
+	public Projectile(float x, float y, float velX, float velY, float lifetime, Gameplay level){
 		this.x = x;
 		this.y = y;
+		this.velX = velX;
+		this.velY = velY;
+		maxLifeTimer = lifetime;
 		isActive = true;
 		this.level = level;
-		type = "Mob";
-		//mobSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
-		//adjustSprite(mobSprite);
+		type = "Projectile";
+		//projectileSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
+		//adjustSprite(projectileSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
-		//TODO temporary values
-		velX = 1;
-		velY = 1;
-		id = ++mobcount;
 	}
 
 	public void render(Graphics g){
-		if(mobSprite != null){
-			g.drawSprite(mobSprite, x, y);
-		}
-		else{ //TODO Temporary shape placeholder
-			g.drawCircle(x, y, RADIUS);
+		if(isActive){
+			if(projectileSprite != null){
+				g.drawSprite(projectileSprite, x, y);
+			}
+			else{ //TODO Temporary shape placeholder
+				g.drawCircle(x, y, RADIUS);
+			}
 		}
 	}
 
 
 	public void update(float delta){
-		//TODO may need to rewrite movement later on
-		x += velX;
-		y += velY;
-		
-		hitbox.setX(x);
-		hitbox.setY(y);
+		if(isActive){
+			if(lifeTimer < maxLifeTimer){
+				lifeTimer += delta;
+				if(lifeTimer > maxLifeTimer){
+					isActive = false;
+					level.projectiles.remove(this);
+				}
+			}
+
+			x += velX;
+			y += velY;
+
+			hitbox.setX(x);
+			hitbox.setY(y);
+		}
 	}
 
 	/*
