@@ -10,7 +10,7 @@ import org.mini2Dx.core.graphics.Sprite;
 public class Tower{
 
 	public float x, y;
-	public final int RADIUS = 20; //TODO should this be final?
+	public final int RADIUS = 80; //TODO should this be final?
 
 	public boolean isActive;
 
@@ -18,7 +18,7 @@ public class Tower{
 	public Gameplay level;
 	public String type;
 	public Sprite towerSprite;
-	
+
 	public ArrayList<Mob> mobsInRange;
 
 	public Tower(float x, float y, Gameplay level){
@@ -28,7 +28,7 @@ public class Tower{
 		this.level = level;
 		type = "Tower";
 		//towerSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
-		adjustSprite(towerSprite);
+		//adjustSprite(towerSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
 		mobsInRange = new ArrayList<Mob>();
 	}
@@ -38,13 +38,34 @@ public class Tower{
 			g.drawSprite(towerSprite, x, y);
 		}
 		else{ //TODO Temporary rectangle placeholder
+			g.drawCircle(x,  y, RADIUS / 4);
 			g.drawCircle(x,  y, RADIUS);
 		}
 	}
 
 
 	public void update(float delta){		
-		
+		detectMobs();
+		System.out.println(mobsInRange.size()); //TODO remove later
+	}
+
+	public void detectMobs(){
+		for(int i = 0; i < level.mobs.size(); i++){
+			Mob temp = level.mobs.get(i);
+			if(temp != null){
+				if(distanceTo(temp.hitbox) <= RADIUS){ //If a mob is within range
+					System.out.println("Mob in range");
+					if(!mobsInRange.contains(temp)){ //If the mob is new
+						mobsInRange.add(temp);
+					}
+				}
+				else{ //If the mob is out of range
+					if(mobsInRange.contains(temp)){ //If the mob moved out of range
+						mobsInRange.remove(temp);
+					}
+				}
+			}
+		}
 	}
 
 	/*

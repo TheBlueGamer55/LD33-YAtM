@@ -1,7 +1,5 @@
 package com.swinestudios.youarethemonster;
 
-import java.util.ArrayList;
-
 import org.mini2Dx.core.geom.Circle;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
@@ -9,7 +7,7 @@ import org.mini2Dx.core.graphics.Sprite;
 
 public class Mob{
 
-	public float x, y;
+	public float x, y, velX, velY;
 	public final int RADIUS = 8; //TODO should this be final?
 
 	public boolean isActive;
@@ -26,8 +24,11 @@ public class Mob{
 		this.level = level;
 		type = "Mob";
 		//mobSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
-		adjustSprite(mobSprite);
+		//adjustSprite(mobSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
+		//TODO temporary values for velocity
+		velX = 1;
+		velY = 1;
 	}
 
 	public void render(Graphics g){
@@ -35,13 +36,15 @@ public class Mob{
 			g.drawSprite(mobSprite, x, y);
 		}
 		else{ //TODO Temporary rectangle placeholder
-			g.drawCircle(x,  y, RADIUS);
+			g.drawCircle(x, y, RADIUS);
 		}
 	}
 
 
-	public void update(float delta){		
-		
+	public void update(float delta){
+		//TODO may need to rewrite movement later on
+		x += velX;
+		y += velY;
 	}
 
 	/*
