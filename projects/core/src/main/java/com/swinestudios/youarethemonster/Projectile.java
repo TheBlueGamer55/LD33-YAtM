@@ -8,6 +8,7 @@ import org.mini2Dx.core.graphics.Sprite;
 public class Projectile{
 
 	public float x, y, velX, velY;
+	public float damage = 10; //How much damage this projectile does to a mob
 	public float lifeTimer = 0, maxLifeTimer; //For how long does this projectile last
 	public final int RADIUS = 2; //TODO should this be final?
 
@@ -42,7 +43,6 @@ public class Projectile{
 			}
 		}
 	}
-
 
 	public void update(float delta){
 		if(isActive){

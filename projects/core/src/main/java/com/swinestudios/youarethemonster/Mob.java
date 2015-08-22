@@ -11,6 +11,7 @@ public class Mob{
 	public int id;
 
 	public float x, y, velX, velY;
+	public float health, maxHealth = 50; //TODO adjust later
 	public final int RADIUS = 8; //TODO should this be final?
 
 	public boolean isActive;
@@ -26,12 +27,13 @@ public class Mob{
 		isActive = true;
 		this.level = level;
 		type = "Mob";
+		health = maxHealth;
 		//mobSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
 		//adjustSprite(mobSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
 		//TODO temporary values
-		velX = 1;
-		velY = 1;
+		velX = 0.5f;
+		velY = 0.5f;
 		id = ++mobcount;
 	}
 
@@ -52,6 +54,31 @@ public class Mob{
 		
 		hitbox.setX(x);
 		hitbox.setY(y);
+		
+		checkProjectileCollision();
+		
+		//When a mob dies
+		if(health <= 0){
+			//Until the mob is completely removed, move it far away
+			x = -100;
+			y = -100;
+			hitbox.setX(x);
+			hitbox.setY(y);
+			level.mobs.remove(this);
+			//TowerController.points++;
+		}
+	}
+	
+	public void checkProjectileCollision(){
+		for(int i = 0; i < level.projectiles.size(); i++){
+			Projectile temp = level.projectiles.get(i);
+			if(temp != null){
+				if(distanceTo(temp.hitbox) <= RADIUS * 2){ //If there is a collision
+					level.projectiles.remove(temp);
+					health -= temp.damage;
+				}
+			}
+		}
 	}
 
 	/*

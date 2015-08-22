@@ -54,7 +54,7 @@ public class Tower{
 	public void update(float delta){		
 		findNearestMob();
 		//Only start shooting if nearest mob is in range
-		if(nearestMob != null && distanceTo(nearestMob.hitbox) <= RADIUS ){ 
+		if(nearestMob != null && distanceTo(nearestMob.hitbox) <= RADIUS){ 
 			shotTimer += delta;
 			if(shotTimer > maxShotTimer){
 				shootNearestMob();
