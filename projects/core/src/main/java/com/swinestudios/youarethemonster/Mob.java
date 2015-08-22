@@ -6,6 +6,9 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
 public class Mob{
+	
+	public static int mobcount = 0;
+	public int id;
 
 	public float x, y, velX, velY;
 	public final int RADIUS = 8; //TODO should this be final?
@@ -26,9 +29,10 @@ public class Mob{
 		//mobSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
 		//adjustSprite(mobSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
-		//TODO temporary values for velocity
+		//TODO temporary values
 		velX = 1;
 		velY = 1;
+		id = ++mobcount;
 	}
 
 	public void render(Graphics g){
@@ -45,6 +49,9 @@ public class Mob{
 		//TODO may need to rewrite movement later on
 		x += velX;
 		y += velY;
+		
+		hitbox.setX(x);
+		hitbox.setY(y);
 	}
 
 	/*

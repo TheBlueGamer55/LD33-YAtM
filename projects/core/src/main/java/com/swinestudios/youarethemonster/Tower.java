@@ -1,7 +1,5 @@
 package com.swinestudios.youarethemonster;
 
-import java.util.ArrayList;
-
 import org.mini2Dx.core.geom.Circle;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
@@ -19,7 +17,7 @@ public class Tower{
 	public String type;
 	public Sprite towerSprite;
 
-	public ArrayList<Mob> mobsInRange;
+	public Mob nearestMob;
 
 	public Tower(float x, float y, Gameplay level){
 		this.x = x;
@@ -30,7 +28,6 @@ public class Tower{
 		//towerSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
 		//adjustSprite(towerSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
-		mobsInRange = new ArrayList<Mob>();
 	}
 
 	public void render(Graphics g){
@@ -45,27 +42,31 @@ public class Tower{
 
 
 	public void update(float delta){		
-		detectMobs();
-		System.out.println(mobsInRange.size()); //TODO remove later
+		findNearestMob();
+		//shootNearestMob();
+		//TODO debug code - remove later
+		if(nearestMob != null){
+			System.out.println(nearestMob.id);
+		}
 	}
 
-	public void detectMobs(){
+	public void findNearestMob(){
 		for(int i = 0; i < level.mobs.size(); i++){
 			Mob temp = level.mobs.get(i);
-			if(temp != null){
-				if(distanceTo(temp.hitbox) <= RADIUS){ //If a mob is within range
-					System.out.println("Mob in range");
-					if(!mobsInRange.contains(temp)){ //If the mob is new
-						mobsInRange.add(temp);
-					}
+			if(distanceTo(temp.hitbox) <= RADIUS){ //If a mob is within range
+				if(nearestMob == null){ //The first mob that becomes the nearest mob
+					nearestMob = temp;
+					continue;
 				}
-				else{ //If the mob is out of range
-					if(mobsInRange.contains(temp)){ //If the mob moved out of range
-						mobsInRange.remove(temp);
-					}
+				if(distanceTo(temp.hitbox) < distanceTo(nearestMob.hitbox)){ //If this mob is the new closest mob
+					nearestMob = temp;
 				}
 			}
 		}
+	}
+	
+	public void shootNearestMob(){
+		//TODO shoot the nearest mob
 	}
 
 	/*
