@@ -25,9 +25,10 @@ public class Gameplay implements GameScreen{
 	public ArrayList<Projectile> projectiles;
 	public ArrayList<Block> solids;
 	
-	public Tower tempTower;
+	//public Tower tempTower;
 	public Mob mob1, mob2, mob3;
 
+	public TowerController towerController;
 	private TiledMap map;
 	
 	public float camX, camY;
@@ -44,14 +45,14 @@ public class Gameplay implements GameScreen{
 		}catch (IOException e){
 			e.printStackTrace();
 		}*/
-		
+		towerController = new TowerController(this);
 		mobs = new ArrayList<Mob>();
 		towers = new ArrayList<Tower>();
 		projectiles = new ArrayList<Projectile>();
 		solids = new ArrayList<Block>();
 		//TODO temporary code for testing
-		tempTower = new Tower(320, 250, this);
-		towers.add(tempTower);
+		//tempTower = new Tower(320, 250, this);
+		//towers.add(tempTower);
 		mob1 = new Mob(-64, -64, this);
 		mob2 = new Mob(0, 0, this);
 		mob3 = new Mob(-16, -16, this);
@@ -89,6 +90,8 @@ public class Gameplay implements GameScreen{
 		renderMobs(g);
 		renderTowers(g);
 		renderProjectiles(g);
+		//TODO temporary code - remove later
+		towerController.render(g);
 	}
 
 	@Override
@@ -96,6 +99,8 @@ public class Gameplay implements GameScreen{
 		updateMobs(delta);
 		updateTowers(delta);
 		updateProjectiles(delta);
+		//TODO temporary code - remove later
+		towerController.update(delta);
 		
 		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){
 			sm.enterGameScreen(MainMenu.ID, new FadeOutTransition(), new FadeInTransition());
@@ -106,6 +111,12 @@ public class Gameplay implements GameScreen{
 		}
 		if(Gdx.input.isKeyPressed(Keys.A)){
 			camX--;
+		}
+		if(Gdx.input.isKeyPressed(Keys.W)){
+			camY--;
+		}
+		if(Gdx.input.isKeyPressed(Keys.S)){
+			camY++;
 		}
 	}
 	

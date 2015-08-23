@@ -5,8 +5,6 @@ import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
-import com.badlogic.gdx.Gdx;
-
 public class Tower{
 
 	public float x, y;
