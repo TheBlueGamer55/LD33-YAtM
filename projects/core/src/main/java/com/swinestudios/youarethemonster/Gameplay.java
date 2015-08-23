@@ -17,22 +17,24 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 
 public class Gameplay implements GameScreen{
-	
+
 	public static int ID = 2;
-	
+
 	public ArrayList<Mob> mobs;
 	public ArrayList<Tower> towers;
 	public ArrayList<Projectile> projectiles;
 	public ArrayList<Block> solids;
-	
+
+	public ControllableMob player;
+
 	//public Tower tempTower;
 	public Mob mob1, mob2, mob3;
 
 	public TowerController towerController;
 	private TiledMap map;
-	
+
 	public float camX, camY;
-	
+
 	@Override
 	public int getId(){
 		return ID;
@@ -45,42 +47,48 @@ public class Gameplay implements GameScreen{
 		}catch (IOException e){
 			e.printStackTrace();
 		}*/
+	}
+
+	@Override
+	public void postTransitionIn(Transition t){
+
+	}
+
+	@Override
+	public void postTransitionOut(Transition t){
+
+	}
+
+	@Override
+	public void preTransitionIn(Transition t){		
 		towerController = new TowerController(this);
 		mobs = new ArrayList<Mob>();
 		towers = new ArrayList<Tower>();
 		projectiles = new ArrayList<Projectile>();
 		solids = new ArrayList<Block>();
+
 		//TODO temporary code for testing
 		//tempTower = new Tower(320, 250, this);
 		//towers.add(tempTower);
+		Block block1 = new Block(500, 30, 20, 80, this);
+		Block block2 = new Block(450, 30, 50, 20, this);
+		solids.add(block1);
+		solids.add(block2);
 		mob1 = new Mob(-64, -64, this);
 		mob2 = new Mob(0, 0, this);
 		mob3 = new Mob(-16, -16, this);
 		mobs.add(mob1);
 		mobs.add(mob2);
 		mobs.add(mob3);
-	}
 
-	@Override
-	public void postTransitionIn(Transition t){
-		
-	}
-
-	@Override
-	public void postTransitionOut(Transition t){
-		
-	}
-
-	@Override
-	public void preTransitionIn(Transition t){
-		//TODO change values later
-		camX = 0;
-		camY = 0;
+		player = new ControllableMob(320, 240, this);
+		camX = player.x - Gdx.graphics.getWidth() / 2;
+		camY = player.y - Gdx.graphics.getHeight() / 2;
 	}
 
 	@Override
 	public void preTransitionOut(Transition t){
-		
+
 	}
 
 	@Override
@@ -88,74 +96,69 @@ public class Gameplay implements GameScreen{
 		g.translate((float) Math.round(camX), (float) Math.round(camY)); //Camera movement
 		g.drawString("This is the gameplay", 320, 240);
 		renderMobs(g);
+		player.render(g);
 		renderTowers(g);
 		renderProjectiles(g);
 		//TODO temporary code - remove later
 		towerController.render(g);
+		for(int i = 0; i < solids.size(); i++){
+			solids.get(i).render(g);
+		}
 	}
 
 	@Override
 	public void update(GameContainer gc, ScreenManager<? extends GameScreen> sm, float delta){
+		camX = player.x - Gdx.graphics.getWidth() / 2;
+		camY = player.y - Gdx.graphics.getHeight() / 2;
+
 		updateMobs(delta);
+		player.update(delta);
 		updateTowers(delta);
 		updateProjectiles(delta);
 		//TODO temporary code - remove later
 		towerController.update(delta);
-		
+
 		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){
 			sm.enterGameScreen(MainMenu.ID, new FadeOutTransition(), new FadeInTransition());
 		}
-		//TODO debug code to move camera
-		if(Gdx.input.isKeyPressed(Keys.D)){
-			camX++;
-		}
-		if(Gdx.input.isKeyPressed(Keys.A)){
-			camX--;
-		}
-		if(Gdx.input.isKeyPressed(Keys.W)){
-			camY--;
-		}
-		if(Gdx.input.isKeyPressed(Keys.S)){
-			camY++;
-		}
 	}
-	
+
 	public void renderTowers(Graphics g){
 		for(int i = 0; i < towers.size(); i++){
 			towers.get(i).render(g);
 		}
 	}
-	
+
 	public void updateTowers(float delta){
 		for(int i = 0; i < towers.size(); i++){
 			towers.get(i).update(delta);
 		}
 	}
-	
+
 	public void renderMobs(Graphics g){
 		for(int i = 0; i < mobs.size(); i++){
 			mobs.get(i).render(g);
 		}
 	}
-	
+
 	public void updateMobs(float delta){
 		for(int i = 0; i < mobs.size(); i++){
 			mobs.get(i).update(delta);
 		}
 	}
-	
+
 	public void renderProjectiles(Graphics g){
 		for(int i = 0; i < projectiles.size(); i++){
 			projectiles.get(i).render(g);
 		}
 	}
-	
+
 	public void updateProjectiles(float delta){
 		for(int i = 0; i < projectiles.size(); i++){
 			projectiles.get(i).update(delta);
 		}
 	}
-	
+
 	/* 
 	 * Generates all solids based on a given tile map's object layer and adds them to the game. 
 	 */
@@ -174,11 +177,11 @@ public class Gameplay implements GameScreen{
 			}
 		}
 	}
-	
+
 	@Override
 	public void interpolate(GameContainer gc, float delta){
 	}
-	
+
 	@Override
 	public void onPause() {
 	}
