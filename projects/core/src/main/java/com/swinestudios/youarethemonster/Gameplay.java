@@ -24,11 +24,21 @@ public class Gameplay implements GameScreen{
 	public ArrayList<Tower> towers;
 	public ArrayList<Projectile> projectiles;
 	public ArrayList<Block> solids;
+<<<<<<< Temporary merge branch 1
 	public ArrayList<Waypoint> waypoints;
+
+	public Tower tempTower;
+=======
+
 
 	public ControllableMob player;
 
 	//public Tower tempTower;
+=======
+	public ArrayList<Waypoint> waypoints;
+	
+	public Tower tempTower;
+>>>>>>> Waypoint
 	public Mob mob1, mob2, mob3;
 
 	public TowerController towerController;
@@ -191,6 +201,8 @@ public class Gameplay implements GameScreen{
 			}
 		}
 	}
+
+=======
 	
 	public void generateWaypoints(TiledMap map){
 		List<TiledObject> objects = map.getObjectGroup("Waypoints").getObjects();
