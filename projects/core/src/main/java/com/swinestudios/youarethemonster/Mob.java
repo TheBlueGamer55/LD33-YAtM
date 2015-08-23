@@ -13,6 +13,7 @@ public class Mob{
 	public float x, y, velX, velY;
 	public float health, maxHealth = 50; //TODO adjust later
 	public final int RADIUS = 8; //TODO should this be final?
+	public final int POINT_VALUE = 10; //TODO adjust later, how many points the hero player gets if a mob dies
 
 	public boolean isActive;
 
@@ -65,7 +66,7 @@ public class Mob{
 			hitbox.setX(x);
 			hitbox.setY(y);
 			level.mobs.remove(this);
-			//TowerController.points++;
+			TowerController.points += POINT_VALUE;
 		}
 	}
 	

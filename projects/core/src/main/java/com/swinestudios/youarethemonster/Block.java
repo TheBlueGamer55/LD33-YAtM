@@ -6,12 +6,13 @@ import org.mini2Dx.core.graphics.Graphics;
 public class Block extends Rectangle{
 
 	public boolean isActive;
-
+	public String type;
 	private Gameplay level;
 
 	public Block(float x, float y, float width, float height, Gameplay level){
 		super(x, y, width, height);
 		isActive = true;
+		type = "Block";
 		this.level = level;
 	}
 
