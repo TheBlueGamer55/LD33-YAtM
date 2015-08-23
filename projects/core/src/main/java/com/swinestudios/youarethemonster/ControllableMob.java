@@ -88,6 +88,7 @@ public class ControllableMob implements InputProcessor{
 		
 		hitbox.setX(this.x);
 		hitbox.setY(this.y);
+		hitbox2.setX(this.x + hitbox.getWidth() / 2);
 			if(temp != null && temp.isActive){
 	}
 

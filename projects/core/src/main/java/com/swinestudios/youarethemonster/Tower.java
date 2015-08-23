@@ -144,8 +144,6 @@ public class Tower{
 		level.projectiles.add(p);
 	}
 
-	}
-
 	public void setAutoMobsOnly(boolean flag){
 		autoMobsOnly = flag;
 	/*
