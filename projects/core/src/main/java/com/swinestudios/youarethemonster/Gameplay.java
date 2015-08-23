@@ -24,10 +24,16 @@ public class Gameplay implements GameScreen{
 	public ArrayList<Tower> towers;
 	public ArrayList<Projectile> projectiles;
 	public ArrayList<Block> solids;
+<<<<<<< HEAD
 
 	public ControllableMob player;
 
 	//public Tower tempTower;
+=======
+	public ArrayList<Waypoint> waypoints;
+	
+	public Tower tempTower;
+>>>>>>> Waypoint
 	public Mob mob1, mob2, mob3;
 
 	public TowerController towerController;
@@ -66,7 +72,11 @@ public class Gameplay implements GameScreen{
 		towers = new ArrayList<Tower>();
 		projectiles = new ArrayList<Projectile>();
 		solids = new ArrayList<Block>();
+<<<<<<< HEAD
 
+=======
+		waypoints = new  ArrayList<Waypoint>();
+>>>>>>> Waypoint
 		//TODO temporary code for testing
 		//tempTower = new Tower(320, 250, this);
 		//towers.add(tempTower);
@@ -80,6 +90,20 @@ public class Gameplay implements GameScreen{
 		mobs.add(mob1);
 		mobs.add(mob2);
 		mobs.add(mob3);
+<<<<<<< HEAD
+=======
+		
+		Waypoint waypoint1 = new Waypoint(0, 0, "HOME", this);
+		Waypoint waypoint2 = new Waypoint(0, 10, "", this);
+		Waypoint waypoint3 = new Waypoint(5, 10, "", this);
+		waypoints.add(waypoint1);
+		waypoints.add(waypoint2);
+		waypoints.add(waypoint3);
+		
+		startWaypointPairing();
+		
+	}
+>>>>>>> Waypoint
 
 		player = new ControllableMob(320, 240, this);
 		camX = player.x - Gdx.graphics.getWidth() / 2;
@@ -177,7 +201,42 @@ public class Gameplay implements GameScreen{
 			}
 		}
 	}
+<<<<<<< HEAD
 
+=======
+	
+	public void generateWaypoints(TiledMap map){
+		List<TiledObject> objects = map.getObjectGroup("Waypoints").getObjects();
+		if(objects != null){ //if the given object layer exists
+			for(int i = 0; i < objects.size(); i++){
+				TiledObject temp = objects.get(i);
+				
+				Waypoint w = new Waypoint(temp.getX() + temp.getWidth()/2, temp.getY() + temp.getHeight()/2, temp.getName(), this);
+				if(waypoints != null){
+					waypoints.add(w);
+				}
+				else{
+					System.out.println("ArrayList Waypoints does not exist."); //error message
+				}
+			}
+		}
+		
+		startWaypointPairing();
+
+	}
+	
+	public void startWaypointPairing(){
+		
+		for(int i = 0; i < waypoints.size(); i++){
+			
+			if(waypoints.get(i).isHome){
+				waypoints.get(i).findChildren(waypoints, 'x');//The x call means search all directions
+			}
+		}
+		
+	}
+	
+>>>>>>> Waypoint
 	@Override
 	public void interpolate(GameContainer gc, float delta){
 	}
