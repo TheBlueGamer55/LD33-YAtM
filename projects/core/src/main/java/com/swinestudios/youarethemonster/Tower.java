@@ -92,13 +92,14 @@ public class Tower{
 			//Tower only targets controllable mobs
 			else{
 				//Only start shooting if controllable mob is in range
-				if(nearestControllableMob != null && distanceTo(nearestControllableMob.hitbox2) <= RADIUS){ 
+				/*if(nearestControllableMob != null && distanceTo(nearestControllableMob.hitbox2) <= RADIUS){ 
 					shotTimer += delta;
 					if(shotTimer > maxShotTimer){
 						shootControllableMob();
 						shotTimer = 0;
 					}
-				}
+				}*/
+				//TODO TEMPORARILY COMMENTED OUT FOR MERGE CONFLICT FIXING
 			}
 
 			//If a tower is destroyed
@@ -146,6 +147,7 @@ public class Tower{
 
 	public void setAutoMobsOnly(boolean flag){
 		autoMobsOnly = flag;
+	}
 	/*
 	 * Returns the current tile position, given the specific tile dimensions
 	 */

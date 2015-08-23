@@ -24,17 +24,23 @@ public class Gameplay implements GameScreen{
 	public ArrayList<Tower> towers;
 	public ArrayList<Projectile> projectiles;
 	public ArrayList<Block> solids;
-
+<<<<<<< HEAD
 	public ArrayList<Waypoint> waypoints;
-
-	public Tower tempTower;
-
-
+=======
+<<<<<<< HEAD
+>>>>>>> 6d20e592954e3237a2b59fb1bf73de749b23b7a7
 
 	public ControllableMob player;
 
 	//public Tower tempTower;
-
+<<<<<<< HEAD
+=======
+=======
+	public ArrayList<Waypoint> waypoints;
+	
+	public Tower tempTower;
+>>>>>>> Waypoint
+>>>>>>> 6d20e592954e3237a2b59fb1bf73de749b23b7a7
 	public Mob mob1, mob2, mob3;
 
 	public TowerController towerController;
@@ -75,7 +81,15 @@ public class Gameplay implements GameScreen{
 		towers = new ArrayList<Tower>();
 		projectiles = new ArrayList<Projectile>();
 		solids = new ArrayList<Block>();
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+
+=======
+		waypoints = new  ArrayList<Waypoint>();
+>>>>>>> Waypoint
+>>>>>>> 6d20e592954e3237a2b59fb1bf73de749b23b7a7
 		//TODO temporary code for testing
 		//tempTower = new Tower(320, 250, this);
 		//towers.add(tempTower);
@@ -89,8 +103,13 @@ public class Gameplay implements GameScreen{
 		mobs.add(mob1);
 		mobs.add(mob2);
 		mobs.add(mob3);
+<<<<<<< HEAD
 		
 		waypoints = new  ArrayList<Waypoint>();
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6d20e592954e3237a2b59fb1bf73de749b23b7a7
 		
 		Waypoint waypoint1 = new Waypoint(0, 0, "HOME", this);
 		Waypoint waypoint2 = new Waypoint(0, 10, "", this);
@@ -100,6 +119,12 @@ public class Gameplay implements GameScreen{
 		waypoints.add(waypoint3);
 		
 		startWaypointPairing();
+<<<<<<< HEAD
+=======
+		
+	}
+>>>>>>> Waypoint
+>>>>>>> 6d20e592954e3237a2b59fb1bf73de749b23b7a7
 
 		player = new ControllableMob(320, 240, this);
 		camX = player.x - Gdx.graphics.getWidth() / 2;
@@ -197,6 +222,12 @@ public class Gameplay implements GameScreen{
 			}
 		}
 	}
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> 6d20e592954e3237a2b59fb1bf73de749b23b7a7
 	
 	public void generateWaypoints(TiledMap map){
 		List<TiledObject> objects = map.getObjectGroup("Waypoints").getObjects();
@@ -228,7 +259,12 @@ public class Gameplay implements GameScreen{
 		}
 		
 	}
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> Waypoint
+>>>>>>> 6d20e592954e3237a2b59fb1bf73de749b23b7a7
 	@Override
 	public void interpolate(GameContainer gc, float delta){
 	}
