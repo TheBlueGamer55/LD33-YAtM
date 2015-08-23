@@ -24,6 +24,7 @@ public class Gameplay implements GameScreen{
 	public ArrayList<Tower> towers;
 	public ArrayList<Projectile> projectiles;
 	public ArrayList<Block> solids;
+	public ArrayList<Waypoint> waypoints;
 	
 	public Tower tempTower;
 	public Mob mob1, mob2, mob3;
@@ -49,6 +50,7 @@ public class Gameplay implements GameScreen{
 		towers = new ArrayList<Tower>();
 		projectiles = new ArrayList<Projectile>();
 		solids = new ArrayList<Block>();
+		waypoints = new  ArrayList<Waypoint>();
 		//TODO temporary code for testing
 		tempTower = new Tower(320, 250, this);
 		towers.add(tempTower);
@@ -160,6 +162,29 @@ public class Gameplay implements GameScreen{
 				else{
 					System.out.println("ArrayList solids does not exist."); //error message
 				}
+			}
+		}
+	}
+	
+	public void generateWaypoints(TiledMap map){
+		List<TiledObject> objects = map.getObjectGroup("Waypoints").getObjects();
+		if(objects != null){ //if the given object layer exists
+			for(int i = 0; i < objects.size(); i++){
+				TiledObject temp = objects.get(i);
+				
+				Waypoint w = new Waypoint(temp.getX() + temp.getWidth()/2, temp.getY() + temp.getHeight()/2, temp.getName(), this);
+				if(waypoints != null){
+					waypoints.add(w);
+				}
+				else{
+					System.out.println("ArrayList Waypoints does not exist."); //error message
+				}
+			}
+		}
+		for(int i = 0; i < waypoints.size(); i++){
+			
+			if(waypoints.get(i).isHome){
+				waypoints.get(i).findChildren(waypoints, 'x');//The x call means search all directions
 			}
 		}
 	}
