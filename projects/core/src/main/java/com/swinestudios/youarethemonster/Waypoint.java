@@ -46,6 +46,7 @@ public class Waypoint {
 						tester.x-=1;
 					}
 					if(reachable){
+						System.out.println("Found Left Child");
 						children.add(field.get(i));
 						directions.add('L');
 						if(field.get(i).paired==false){
@@ -68,6 +69,7 @@ public class Waypoint {
 						tester.x+=1;
 					}
 					if(reachable){
+						System.out.println("Found Right Child");
 						children.add(field.get(i));
 						directions.add('R');
 						if(field.get(i).paired==false){
@@ -91,6 +93,7 @@ public class Waypoint {
 						tester.y-=1;
 					}
 					if(reachable){
+						System.out.println("Found Up Child");
 						children.add(field.get(i));
 						directions.add('U');
 						if(field.get(i).paired==false){
@@ -114,6 +117,7 @@ public class Waypoint {
 						tester.y+=1;
 					}
 					if(reachable){
+						System.out.println("Found Down Child");
 						children.add(field.get(i));
 						directions.add('D');
 						if(field.get(i).paired==false){

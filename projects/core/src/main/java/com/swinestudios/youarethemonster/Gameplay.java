@@ -60,6 +60,16 @@ public class Gameplay implements GameScreen{
 		mobs.add(mob1);
 		mobs.add(mob2);
 		mobs.add(mob3);
+		
+		Waypoint waypoint1 = new Waypoint(0, 0, "HOME", this);
+		Waypoint waypoint2 = new Waypoint(0, 10, "", this);
+		Waypoint waypoint3 = new Waypoint(5, 10, "", this);
+		waypoints.add(waypoint1);
+		waypoints.add(waypoint2);
+		waypoints.add(waypoint3);
+		
+		startWaypointPairing();
+		
 	}
 
 	@Override
@@ -181,12 +191,20 @@ public class Gameplay implements GameScreen{
 				}
 			}
 		}
+		
+		startWaypointPairing();
+
+	}
+	
+	public void startWaypointPairing(){
+		
 		for(int i = 0; i < waypoints.size(); i++){
 			
 			if(waypoints.get(i).isHome){
 				waypoints.get(i).findChildren(waypoints, 'x');//The x call means search all directions
 			}
 		}
+		
 	}
 	
 	@Override
