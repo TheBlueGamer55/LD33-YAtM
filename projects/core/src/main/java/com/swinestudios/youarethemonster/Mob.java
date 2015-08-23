@@ -45,7 +45,7 @@ public class Mob{
 		id = ++mobcount;
 		
 		if(spawnAtHome==true){
-	
+			System.out.println(level.home); //TODO debug code
 			this.x = level.home.x;
 			this.y = level.home.y;
 			

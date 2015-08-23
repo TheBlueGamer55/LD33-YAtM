@@ -12,6 +12,7 @@ import org.mini2Dx.core.screen.transition.FadeInTransition;
 import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import org.mini2Dx.tiled.TiledMap;
 import org.mini2Dx.tiled.TiledObject;
+import org.mini2Dx.tiled.exception.TiledException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -28,9 +29,6 @@ public class Gameplay implements GameScreen{
 	public ArrayList<Waypoint> waypoints;
 
 	public Tower tempTower;
-	
-
-
 
 	public ControllableMob player;
 
@@ -52,18 +50,16 @@ public class Gameplay implements GameScreen{
 
 	@Override
 	public void initialise(GameContainer gc){
-		/*try{
-			map = new TiledMap(Gdx.files.internal("someMap.tmx"));
-		}catch (IOException e){
+		try{
+			map = new TiledMap(Gdx.files.internal("testmap.tmx"));
+		} catch (TiledException e) {
 			e.printStackTrace();
-		}*/
-
-		
+		}	
 	}
 
 	@Override
 	public void postTransitionIn(Transition t){
-
+		
 	}
 
 	@Override
@@ -78,23 +74,24 @@ public class Gameplay implements GameScreen{
 		towers = new ArrayList<Tower>();
 		projectiles = new ArrayList<Projectile>();
 		solids = new ArrayList<Block>();
+		waypoints = new  ArrayList<Waypoint>();
+		
+		if(map != null){
+			generateSolids(map);
+			generateWaypoints(map);
+		}
 
 		//TODO temporary code for testing
 		//tempTower = new Tower(320, 250, this);
 		//towers.add(tempTower);
-		Block block1 = new Block(500, 30, 20, 80, this);
-		Block block2 = new Block(450, 30, 50, 20, this);
-		solids.add(block1);
-		solids.add(block2);
 		
-		waypoints = new  ArrayList<Waypoint>();
-		Waypoint waypoint1 = new Waypoint(50, 0, "HOME", this);
-		Waypoint waypoint2 = new Waypoint(50, 200, "", this);
-		Waypoint waypoint3 = new Waypoint(300, 200, "", this);
-		waypoints.add(waypoint1);
-		waypoints.add(waypoint2);
-		waypoints.add(waypoint3);
-		startWaypointPairing();
+		//Waypoint waypoint1 = new Waypoint(50, 0, "HOME", this);
+		//Waypoint waypoint2 = new Waypoint(50, 200, "", this);
+		//Waypoint waypoint3 = new Waypoint(300, 200, "", this);
+		//waypoints.add(waypoint1);
+		//waypoints.add(waypoint2);
+		//waypoints.add(waypoint3);
+		//startWaypointPairing();
 		
 		mob1 = new Mob(-64, -64, this, true);
 		mob2 = new Mob(0, 0, this, true);
@@ -102,12 +99,6 @@ public class Gameplay implements GameScreen{
 		mobs.add(mob1);
 		mobs.add(mob2);
 		mobs.add(mob3);
-		
-
-		
-
-		
-
 
 		player = new ControllableMob(320, 240, this);
 		camX = player.x - Gdx.graphics.getWidth() / 2;
@@ -122,6 +113,7 @@ public class Gameplay implements GameScreen{
 	@Override
 	public void render(GameContainer gc, Graphics g){
 		g.translate((float) Math.round(camX), (float) Math.round(camY)); //Camera movement
+		map.draw(g, 0, 0);
 		g.drawString("This is the gameplay", 320, 240);
 		renderMobs(g);
 		player.render(g);
@@ -131,6 +123,9 @@ public class Gameplay implements GameScreen{
 		towerController.render(g);
 		for(int i = 0; i < solids.size(); i++){
 			solids.get(i).render(g);
+		}
+		for(int i = 0; i < waypoints.size(); i++){
+			g.drawCircle(waypoints.get(i).x, waypoints.get(i).y, 2);
 		}
 	}
 

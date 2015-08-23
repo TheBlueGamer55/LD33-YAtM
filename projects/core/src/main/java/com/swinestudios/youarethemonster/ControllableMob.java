@@ -99,7 +99,6 @@ public class ControllableMob implements InputProcessor{
 		//If the controllable mob dies, game over?
 		if(health <= 0){
 			//TODO game over
-			System.out.println("dead");
 		}
 	}
 
