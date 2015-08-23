@@ -89,6 +89,7 @@ public class Tower{
 					}
 				}
 			}
+<<<<<<< HEAD
 			//Tower only targets controllable mobs
 			else{
 				//Only start shooting if controllable mob is in range
@@ -100,6 +101,8 @@ public class Tower{
 					}
 				}
 			}
+=======
+>>>>>>> parent of cf3cd10... Towers can now target and damage controllable mobs
 
 			//If a tower is destroyed
 			if(health <= 0){
@@ -136,7 +139,8 @@ public class Tower{
 		float targetY = nearestMob.y;
 		float deltaX = targetX - this.x;
 		float deltaY = targetY - this.y;
-		float theta = (float) Math.atan2(deltaY, deltaX); //angle from player to mouse
+<<<<<<< HEAD
+		float theta = (float) Math.atan2(deltaY, deltaX); 
 
 		float vectorX = (float) Math.cos(theta) * SHOT_MAGNITUDE;
 		float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;
@@ -144,10 +148,26 @@ public class Tower{
 		level.projectiles.add(p);
 	}
 
+	public void shootControllableMob(){
+		float targetX = nearestControllableMob.hitbox2.getX();
+		float targetY = nearestControllableMob.hitbox2.getY();
+		float deltaX = targetX - this.x;
+		float deltaY = targetY - this.y;
+		float theta = (float) Math.atan2(deltaY, deltaX); 
+=======
+		float theta = (float) Math.atan2(deltaY, deltaX); //angle from player to mouse
+>>>>>>> parent of cf3cd10... Towers can now target and damage controllable mobs
+
+		float vectorX = (float) Math.cos(theta) * SHOT_MAGNITUDE;
+		float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;
+		Projectile p = new Projectile(x, y, vectorX, vectorY, SHOT_LIFETIME, level);
+		level.projectiles.add(p);
 	}
 
 	public void setAutoMobsOnly(boolean flag){
 		autoMobsOnly = flag;
+	}
+
 	/*
 	 * Returns the current tile position, given the specific tile dimensions
 	 */

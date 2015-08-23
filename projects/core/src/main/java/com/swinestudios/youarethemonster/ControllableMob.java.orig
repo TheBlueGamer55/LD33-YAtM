@@ -88,7 +88,31 @@ public class ControllableMob implements InputProcessor{
 		
 		hitbox.setX(this.x);
 		hitbox.setY(this.y);
+<<<<<<< HEAD
+		hitbox2.setX(this.x + hitbox.getWidth() / 2);
+		hitbox2.setY(this.y + hitbox.getHeight() / 2);
+
+		checkProjectileCollision();
+
+		//If the controllable mob dies, game over?
+		if(health <= 0){
+			//TODO game over
+			System.out.println("dead");
+		}
+	}
+	
+	public void checkProjectileCollision(){
+		for(int i = 0; i < level.projectiles.size(); i++){
+			Projectile temp = level.projectiles.get(i);
 			if(temp != null && temp.isActive){
+				if(distanceTo(temp.hitbox) <= RADIUS * 2){ //If there is a collision
+					level.projectiles.remove(temp);
+					health -= temp.damage;
+				}
+			}
+		}
+=======
+>>>>>>> parent of cf3cd10... Towers can now target and damage controllable mobs
 	}
 
 	public void playerMovement(){
