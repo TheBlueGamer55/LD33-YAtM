@@ -24,11 +24,16 @@ public class Gameplay implements GameScreen{
 	public ArrayList<Tower> towers;
 	public ArrayList<Projectile> projectiles;
 	public ArrayList<Block> solids;
+<<<<<<< HEAD
 	public ArrayList<Waypoint> waypoints;
+	
+	public Tower tempTower;
+=======
 
 	public ControllableMob player;
 
 	//public Tower tempTower;
+>>>>>>> 3bccb0f2fc75ef74628b75331abc0c70b58e911b
 	public Mob mob1, mob2, mob3;
 
 	public TowerController towerController;
@@ -48,8 +53,6 @@ public class Gameplay implements GameScreen{
 		}catch (IOException e){
 			e.printStackTrace();
 		}*/
-
-		
 	}
 
 	@Override
@@ -69,7 +72,11 @@ public class Gameplay implements GameScreen{
 		towers = new ArrayList<Tower>();
 		projectiles = new ArrayList<Projectile>();
 		solids = new ArrayList<Block>();
+<<<<<<< HEAD
+		waypoints = new  ArrayList<Waypoint>();
+=======
 
+>>>>>>> 3bccb0f2fc75ef74628b75331abc0c70b58e911b
 		//TODO temporary code for testing
 		//tempTower = new Tower(320, 250, this);
 		//towers.add(tempTower);
@@ -83,8 +90,7 @@ public class Gameplay implements GameScreen{
 		mobs.add(mob1);
 		mobs.add(mob2);
 		mobs.add(mob3);
-		
-		waypoints = new  ArrayList<Waypoint>();
+<<<<<<< HEAD
 		
 		Waypoint waypoint1 = new Waypoint(0, 0, "HOME", this);
 		Waypoint waypoint2 = new Waypoint(0, 10, "", this);
@@ -94,6 +100,10 @@ public class Gameplay implements GameScreen{
 		waypoints.add(waypoint3);
 		
 		startWaypointPairing();
+		
+	}
+=======
+>>>>>>> 3bccb0f2fc75ef74628b75331abc0c70b58e911b
 
 		player = new ControllableMob(320, 240, this);
 		camX = player.x - Gdx.graphics.getWidth() / 2;
@@ -191,6 +201,7 @@ public class Gameplay implements GameScreen{
 			}
 		}
 	}
+<<<<<<< HEAD
 	
 	public void generateWaypoints(TiledMap map){
 		List<TiledObject> objects = map.getObjectGroup("Waypoints").getObjects();
@@ -222,7 +233,10 @@ public class Gameplay implements GameScreen{
 		}
 		
 	}
+	
+=======
 
+>>>>>>> 3bccb0f2fc75ef74628b75331abc0c70b58e911b
 	@Override
 	public void interpolate(GameContainer gc, float delta){
 	}

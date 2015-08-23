@@ -38,7 +38,7 @@ public class Waypoint {
 					Block tester = new Block(this.x, this.y, 1, 1, level);
 					boolean reachable = true;
 					while(tester.x>=field.get(i).x){
-						for(int j = 0; j < level.solids.size() && reachable; i++){
+						for(int j = 0; j < level.solids.size() && reachable; j++){
 							if(tester.intersects(level.solids.get(j))){
 								reachable = false;
 							}
@@ -61,7 +61,7 @@ public class Waypoint {
 					Block tester = new Block(this.x, this.y, 1, 1, level);
 					boolean reachable = true;
 					while(tester.x<=field.get(i).x){
-						for(int j = 0; j < level.solids.size() && reachable; i++){
+						for(int j = 0; j < level.solids.size() && reachable; j++){
 							if(tester.intersects(level.solids.get(j))){
 								reachable = false;
 							}
@@ -85,7 +85,7 @@ public class Waypoint {
 					Block tester = new Block(this.x, this.y, 1, 1, level);
 					boolean reachable = true;
 					while(tester.y>=field.get(i).y){
-						for(int j = 0; j < level.solids.size() && reachable; i++){
+						for(int j = 0; j < level.solids.size() && reachable; j++){
 							if(tester.intersects(level.solids.get(j))){
 								reachable = false;
 							}
@@ -109,7 +109,9 @@ public class Waypoint {
 					Block tester = new Block(this.x, this.y, 1, 1, level);
 					boolean reachable = true;
 					while(tester.y<=field.get(i).y){
-						for(int j = 0; j < level.solids.size() && reachable; i++){
+						
+						
+						for(int j = 0; j < level.solids.size() && reachable; j++){
 							if(tester.intersects(level.solids.get(j))){
 								reachable = false;
 							}
