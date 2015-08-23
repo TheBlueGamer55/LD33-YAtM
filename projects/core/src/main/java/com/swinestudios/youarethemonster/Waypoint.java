@@ -131,4 +131,9 @@ public class Waypoint {
 		}
 		
 	}
+	
+	public int getRandomChildIndex(){
+		return((int)((double)children.size()*Math.random()));
+	}
+	
 }
