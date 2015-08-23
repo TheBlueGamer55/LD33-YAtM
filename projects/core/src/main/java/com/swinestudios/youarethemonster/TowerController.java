@@ -64,7 +64,10 @@ public class TowerController{
 			}
 		}
 		if(isEmpty){
-			level.towers.add(new Tower(pos.getX(), pos.getY(), level));
+			Tower t = new Tower(pos.getX(), pos.getY(), level);
+			//TODO testing code - remove later
+			t.setAutoMobsOnly(random.nextBoolean());
+			level.towers.add(t);
 			points -= cost;
 		}
 	}

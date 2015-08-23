@@ -24,6 +24,7 @@ public class Tower{
 	public float buildingTimer, maxBuildingTime = 2; //How long it takes to build a tower
 
 	public boolean isActive;
+	public boolean autoMobsOnly = true;
 
 	public Circle hitbox;
 	public Gameplay level;
@@ -77,21 +78,28 @@ public class Tower{
 				}
 				return; //Skip all the logic until a tower is finished building
 			}
-			findNearestMob();
-			//Only start shooting if nearest mob is in range
-			if(nearestMob != null && distanceTo(nearestMob.hitbox) <= RADIUS){ 
-				shotTimer += delta;
-				if(shotTimer > maxShotTimer){
-					shootNearestMob();
-					shotTimer = 0;
+
+			//Tower only targets path-following mobs
+			if(autoMobsOnly){
+				findNearestMob();
+				//Only start shooting if nearest mob is in range
+				if(nearestMob != null && distanceTo(nearestMob.hitbox) <= RADIUS){ 
+					shotTimer += delta;
+					if(shotTimer > maxShotTimer){
+						shootNearestMob();
+						shotTimer = 0;
+					}
 				}
 			}
-			//Only start shooting if controllable mob is in range
-			if(nearestControllableMob != null && distanceTo(nearestControllableMob.hitbox2) <= RADIUS){ 
-				shotTimer += delta;
-				if(shotTimer > maxShotTimer){
-					shootControllableMob();
-					shotTimer = 0;
+			//Tower only targets controllable mobs
+			else{
+				//Only start shooting if controllable mob is in range
+				if(nearestControllableMob != null && distanceTo(nearestControllableMob.hitbox2) <= RADIUS){ 
+					shotTimer += delta;
+					if(shotTimer > maxShotTimer){
+						shootControllableMob();
+						shotTimer = 0;
+					}
 				}
 			}
 
@@ -137,7 +145,7 @@ public class Tower{
 		Projectile p = new Projectile(x, y, vectorX, vectorY, SHOT_LIFETIME, level);
 		level.projectiles.add(p);
 	}
-	
+
 	public void shootControllableMob(){
 		float targetX = nearestControllableMob.hitbox2.getX();
 		float targetY = nearestControllableMob.hitbox2.getY();
@@ -149,6 +157,10 @@ public class Tower{
 		float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;
 		Projectile p = new Projectile(x, y, vectorX, vectorY, SHOT_LIFETIME, level);
 		level.projectiles.add(p);
+	}
+
+	public void setAutoMobsOnly(boolean flag){
+		autoMobsOnly = flag;
 	}
 
 	/*

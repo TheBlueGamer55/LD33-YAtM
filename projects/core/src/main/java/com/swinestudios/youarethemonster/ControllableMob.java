@@ -106,7 +106,7 @@ public class ControllableMob implements InputProcessor{
 	public void checkProjectileCollision(){
 		for(int i = 0; i < level.projectiles.size(); i++){
 			Projectile temp = level.projectiles.get(i);
-			if(temp != null){
+			if(temp != null && temp.isActive){
 				if(distanceTo(temp.hitbox) <= RADIUS * 2){ //If there is a collision
 					level.projectiles.remove(temp);
 					health -= temp.damage;
