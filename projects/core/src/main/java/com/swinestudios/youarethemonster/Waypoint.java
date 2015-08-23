@@ -22,7 +22,8 @@ public class Waypoint {
 		this.level=level;
 		
 		if(name=="HOME"){
-			
+			level.home=this;
+
 			this.isHome = true;
 		}
 		
@@ -131,11 +132,21 @@ public class Waypoint {
 				
 			}
 		}
-		
+
 	}
 	
 	public int getRandomChildIndex(){
 		return((int)((double)children.size()*Math.random()));
+	}
+	
+	public boolean hasChildren(){
+		if(children.size()>0){
+			return true;
+			
+		}
+		else{
+			return false;
+		}
 	}
 	
 }

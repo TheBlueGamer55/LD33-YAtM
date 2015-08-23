@@ -12,9 +12,16 @@ public class Mob{
 
 	public float x, y, velX, velY;
 	public float health, maxHealth = 50; //TODO adjust later
+	public char moveDirection;
 	public final int RADIUS = 8; //TODO should this be final?
 	public final int POINT_VALUE = 10; //TODO adjust later, how many points the hero player gets if a mob dies
-
+	float moveSpeed;//The speed at which this mob moves in the UDLR directions
+	
+	
+	//PATHING VARIABLES
+	public Waypoint target;//Where this is aiming to go
+	
+	
 	public boolean isActive;
 
 	public Circle hitbox;
@@ -22,7 +29,7 @@ public class Mob{
 	public String type;
 	public Sprite mobSprite;
 
-	public Mob(float x, float y, Gameplay level){
+	public Mob(float x, float y, Gameplay level, boolean spawnAtHome){
 		this.x = x;
 		this.y = y;
 		isActive = true;
@@ -36,6 +43,22 @@ public class Mob{
 		velX = 0.5f;
 		velY = 0.5f;
 		id = ++mobcount;
+		
+		if(spawnAtHome==true){
+	
+			this.x = level.home.x;
+			this.y = level.home.y;
+			
+			if(level.home.hasChildren()){
+				int temp = level.home.getRandomChildIndex();
+				this.target=level.home.children.get(temp);
+				this.moveDirection=level.home.directions.get(temp);
+				
+			}
+			
+		}
+		
+		moveSpeed=0.5f;//TODO CHANGE LATER
 	}
 
 	public void render(Graphics g){
@@ -46,9 +69,11 @@ public class Mob{
 			g.drawCircle(x, y, RADIUS);
 		}
 	}
-
-
+	
+	
 	public void update(float delta){
+		waypointPathingUpdate();
+		directedMovement();
 		//TODO may need to rewrite movement later on
 		x += velX;
 		y += velY;
@@ -67,6 +92,43 @@ public class Mob{
 			hitbox.setY(y);
 			level.mobs.remove(this);
 			TowerController.points += POINT_VALUE;
+		}
+	}
+	
+	public void waypointPathingUpdate(){
+		if(this.target!=null){
+			if(Math.abs(this.x-target.x) + Math.abs(this.y-target.y) < moveSpeed){
+				if(this.target.hasChildren()){
+					int temp = this.target.getRandomChildIndex();
+					this.moveDirection = this.target.directions.get(temp);//CRUCIAL that this comes before the next
+					this.target = this.target.children.get(temp);
+
+				}
+			}
+		}
+	}
+	
+	public void directedMovement(){//movement as directed by UDLR directions
+		if(this.moveDirection=='L'){//Left
+			this.velX = -1 * moveSpeed;
+			this.velY = 0;
+			
+		}
+		else if(this.moveDirection=='R'){//Right
+			this.velX = 1 * moveSpeed;
+			this.velY = 0;
+		}
+		else if(this.moveDirection=='U'){//Up
+			this.velX = 0;
+			this.velY = -1 * moveSpeed;
+		}
+		else if(this.moveDirection=='D'){//Down
+			this.velX = 0;
+			this.velY = 1 * moveSpeed;
+		}
+		else if(this.moveDirection=='S'){//S is for stop. Avoid using this because you can't continue on to other waypoints if you do.
+			this.velX = 0;
+			this.velY = 0;
 		}
 	}
 	

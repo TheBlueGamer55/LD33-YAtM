@@ -28,6 +28,7 @@ public class Gameplay implements GameScreen{
 	public ArrayList<Waypoint> waypoints;
 
 	public Tower tempTower;
+	
 
 
 
@@ -41,6 +42,8 @@ public class Gameplay implements GameScreen{
 	private TiledMap map;
 
 	public float camX, camY;
+	
+	public Waypoint home;//where the creeps spawn
 
 	@Override
 	public int getId(){
@@ -83,23 +86,28 @@ public class Gameplay implements GameScreen{
 		Block block2 = new Block(450, 30, 50, 20, this);
 		solids.add(block1);
 		solids.add(block2);
-		mob1 = new Mob(-64, -64, this);
-		mob2 = new Mob(0, 0, this);
-		mob3 = new Mob(-16, -16, this);
+		
+		waypoints = new  ArrayList<Waypoint>();
+		Waypoint waypoint1 = new Waypoint(50, 0, "HOME", this);
+		Waypoint waypoint2 = new Waypoint(50, 200, "", this);
+		Waypoint waypoint3 = new Waypoint(300, 200, "", this);
+		waypoints.add(waypoint1);
+		waypoints.add(waypoint2);
+		waypoints.add(waypoint3);
+		startWaypointPairing();
+		
+		mob1 = new Mob(-64, -64, this, true);
+		mob2 = new Mob(0, 0, this, true);
+		mob3 = new Mob(-16, -16, this, true);
 		mobs.add(mob1);
 		mobs.add(mob2);
 		mobs.add(mob3);
 		
-		waypoints = new  ArrayList<Waypoint>();
+
 		
-		Waypoint waypoint1 = new Waypoint(0, 0, "HOME", this);
-		Waypoint waypoint2 = new Waypoint(0, 10, "", this);
-		Waypoint waypoint3 = new Waypoint(5, 10, "", this);
-		waypoints.add(waypoint1);
-		waypoints.add(waypoint2);
-		waypoints.add(waypoint3);
+
 		
-		startWaypointPairing();
+
 
 		player = new ControllableMob(320, 240, this);
 		camX = player.x - Gdx.graphics.getWidth() / 2;
