@@ -3,6 +3,8 @@ package com.swinestudios.youarethemonster;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class Block extends Rectangle{
 
 	public boolean isActive;
@@ -17,6 +19,7 @@ public class Block extends Rectangle{
 	}
 
 	public void render(Graphics g){
+		g.setColor(Color.GRAY);
 		g.fillRect(x, y, width, height);
 	}
 

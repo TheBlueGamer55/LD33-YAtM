@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
@@ -16,6 +17,7 @@ import org.mini2Dx.tiled.exception.TiledException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 
 public class Gameplay implements GameScreen{
 
@@ -28,11 +30,15 @@ public class Gameplay implements GameScreen{
 
 	public ArrayList<Waypoint> waypoints;
 
-	public Tower tempTower;
+	public final int INITIAL_POINTS = 40;
 
 	public ControllableMob player;
 
-	//public Tower tempTower;
+	public boolean gameOver = false;
+	public boolean paused = false;
+
+	public Rectangle cursor; //For use with UI
+	public Rectangle mobSpawnButton;
 
 	public Mob mob1, mob2, mob3;
 
@@ -40,7 +46,7 @@ public class Gameplay implements GameScreen{
 	private TiledMap map;
 
 	public float camX, camY;
-	
+
 	public Waypoint home;//where the creeps spawn
 
 	@Override
@@ -54,28 +60,35 @@ public class Gameplay implements GameScreen{
 			map = new TiledMap(Gdx.files.internal("testmap.tmx"));
 		} catch (TiledException e) {
 			e.printStackTrace();
-		}	
+		}
+		cursor = new Rectangle(Gdx.input.getX(), Gdx.input.getY(), 1, 1);
+		//TODO change width and height based on button sprite
+		mobSpawnButton = new Rectangle(Gdx.graphics.getWidth() - 60, Gdx.graphics.getHeight() - 60, 50, 32);
 	}
 
 	@Override
 	public void postTransitionIn(Transition t){
-		
+
 	}
 
 	@Override
 	public void postTransitionOut(Transition t){
-
+		gameOver = false;
+		paused = false;
 	}
 
 	@Override
-	public void preTransitionIn(Transition t){		
+	public void preTransitionIn(Transition t){
+		gameOver = false;
+		paused = false;
 		towerController = new TowerController(this);
+		TowerController.points = INITIAL_POINTS;
 		mobs = new ArrayList<Mob>();
 		towers = new ArrayList<Tower>();
 		projectiles = new ArrayList<Projectile>();
 		solids = new ArrayList<Block>();
 		waypoints = new  ArrayList<Waypoint>();
-		
+
 		if(map != null){
 			generateSolids(map);
 			generateWaypoints(map);
@@ -84,7 +97,7 @@ public class Gameplay implements GameScreen{
 		//TODO temporary code for testing
 		//tempTower = new Tower(320, 250, this);
 		//towers.add(tempTower);
-		
+
 		//Waypoint waypoint1 = new Waypoint(50, 0, "HOME", this);
 		//Waypoint waypoint2 = new Waypoint(50, 200, "", this);
 		//Waypoint waypoint3 = new Waypoint(300, 200, "", this);
@@ -92,7 +105,7 @@ public class Gameplay implements GameScreen{
 		//waypoints.add(waypoint2);
 		//waypoints.add(waypoint3);
 		//startWaypointPairing();
-		
+
 		mob1 = new Mob(-64, -64, this, true);
 		mob2 = new Mob(0, 0, this, true);
 		mob3 = new Mob(-16, -16, this, true);
@@ -114,7 +127,6 @@ public class Gameplay implements GameScreen{
 	public void render(GameContainer gc, Graphics g){
 		g.translate((float) Math.round(camX), (float) Math.round(camY)); //Camera movement
 		map.draw(g, 0, 0);
-		g.drawString("This is the gameplay", 320, 240);
 		renderMobs(g);
 		player.render(g);
 		renderTowers(g);
@@ -125,24 +137,71 @@ public class Gameplay implements GameScreen{
 			solids.get(i).render(g);
 		}
 		for(int i = 0; i < waypoints.size(); i++){
-			g.drawCircle(waypoints.get(i).x, waypoints.get(i).y, 2);
+			g.setColor(Color.RED);
+			g.fillCircle(waypoints.get(i).x, waypoints.get(i).y, 2);
+		}
+
+		//TODO - UI graphics using sprites
+		g.drawRect(camX + mobSpawnButton.x, camY + mobSpawnButton.y, mobSpawnButton.width, mobSpawnButton.height);
+		g.drawString("Spawn", camX + mobSpawnButton.x, camY + mobSpawnButton.y);
+		g.drawString("mob", camX + mobSpawnButton.x, camY + mobSpawnButton.y + 12);
+
+		//TODO adjust pause menu and game over UI
+		if(gameOver){
+			g.setColor(Color.WHITE);
+			g.drawString("You died! Press Escape to go back to the main menu", camX + 160, camY + 240);
+		}
+		if(paused){
+			g.setColor(Color.WHITE);
+			g.drawString("Are you sure you want to quit? Y or N", camX + 220, camY + 240);
 		}
 	}
 
 	@Override
 	public void update(GameContainer gc, ScreenManager<? extends GameScreen> sm, float delta){
-		camX = player.x - Gdx.graphics.getWidth() / 2;
-		camY = player.y - Gdx.graphics.getHeight() / 2;
+		//The main game's logic
+		if(!paused && !gameOver){
+			cursor.setX(Gdx.input.getX());
+			cursor.setY(Gdx.input.getY());
 
-		updateMobs(delta);
-		player.update(delta);
-		updateTowers(delta);
-		updateProjectiles(delta);
-		//TODO temporary code - remove later
-		towerController.update(delta);
+			camX = player.x - Gdx.graphics.getWidth() / 2;
+			camY = player.y - Gdx.graphics.getHeight() / 2;
 
-		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){
-			sm.enterGameScreen(MainMenu.ID, new FadeOutTransition(), new FadeInTransition());
+			updateMobs(delta);
+			player.update(delta);
+			updateTowers(delta);
+			updateProjectiles(delta);
+			//TODO temporary code - remove later
+			towerController.update(delta);
+
+			if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){
+				paused = true;
+			}
+
+			//UI controls
+			if(Gdx.input.justTouched()){
+				//TODO Spawn a mob
+				if(cursor.overlaps(mobSpawnButton)){
+					mobs.add(new Mob(home.x, home.y, this, true));
+					//Costs points to spawn a mob
+				}
+			}
+		}
+		//When the main game logic is not running
+		else{
+			if(gameOver){
+				if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){
+					sm.enterGameScreen(MainMenu.ID, new FadeOutTransition(), new FadeInTransition());
+				}
+			}
+			else if(paused){
+				if(Gdx.input.isKeyJustPressed(Keys.Y)){
+					sm.enterGameScreen(MainMenu.ID, new FadeOutTransition(), new FadeInTransition());
+				}
+				if(Gdx.input.isKeyJustPressed(Keys.N)){
+					paused = false;
+				}
+			}
 		}
 	}
 
@@ -200,13 +259,13 @@ public class Gameplay implements GameScreen{
 			}
 		}
 	}
-	
+
 	public void generateWaypoints(TiledMap map){
 		List<TiledObject> objects = map.getObjectGroup("Waypoints").getObjects();
 		if(objects != null){ //if the given object layer exists
 			for(int i = 0; i < objects.size(); i++){
 				TiledObject temp = objects.get(i);
-				
+
 				Waypoint w = new Waypoint(temp.getX() + temp.getWidth()/2, temp.getY() + temp.getHeight()/2, temp.getName(), this);
 				if(waypoints != null){
 					waypoints.add(w);
@@ -216,20 +275,20 @@ public class Gameplay implements GameScreen{
 				}
 			}
 		}
-		
+
 		startWaypointPairing();
 
 	}
-	
+
 	public void startWaypointPairing(){
-		
+
 		for(int i = 0; i < waypoints.size(); i++){
-			
+
 			if(waypoints.get(i).isHome){
 				waypoints.get(i).findChildren(waypoints, 'x');//The x call means search all directions
 			}
 		}
-		
+
 	}
 
 	@Override

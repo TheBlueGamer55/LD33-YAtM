@@ -62,7 +62,7 @@ public class ControllableMob implements InputProcessor{
 	}
 
 	public void render(Graphics g){
-		g.setColor(Color.GREEN);
+		g.setColor(Color.BLUE);
 		g.fillRect(x, y, hitbox.width, hitbox.height);
 		if(velX != 0 || velY != 0){ 
 			//TODO if moving, draw animated sprites
@@ -96,9 +96,10 @@ public class ControllableMob implements InputProcessor{
 
 		checkProjectileCollision();
 
-		//If the controllable mob dies, game over?
+		//If the controllable mob dies, game over
 		if(health <= 0){
 			//TODO game over
+			level.gameOver = true;
 		}
 	}
 

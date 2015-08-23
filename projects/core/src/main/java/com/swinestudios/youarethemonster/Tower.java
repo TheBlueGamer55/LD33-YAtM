@@ -7,6 +7,7 @@ import org.mini2Dx.core.graphics.Sprite;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 
 public class Tower{
 
@@ -57,6 +58,7 @@ public class Tower{
 				g.drawSprite(towerSprite, x, y);
 			}
 			else{ //TODO Temporary shape placeholder
+				g.setColor(Color.GREEN);
 				g.drawCircle(x,  y, RADIUS / 4);
 				g.drawCircle(x,  y, RADIUS);
 			}

@@ -5,6 +5,8 @@ import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class Mob{
 	
 	public static int mobcount = 0;
@@ -45,7 +47,6 @@ public class Mob{
 		id = ++mobcount;
 		
 		if(spawnAtHome==true){
-			System.out.println(level.home); //TODO debug code
 			this.x = level.home.x;
 			this.y = level.home.y;
 			
@@ -66,7 +67,8 @@ public class Mob{
 			g.drawSprite(mobSprite, x, y);
 		}
 		else{ //TODO Temporary shape placeholder
-			g.drawCircle(x, y, RADIUS);
+			g.setColor(Color.DARK_GRAY);
+			g.fillCircle(x, y, RADIUS);
 		}
 	}
 	
