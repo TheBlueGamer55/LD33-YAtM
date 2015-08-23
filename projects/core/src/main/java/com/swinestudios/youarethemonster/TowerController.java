@@ -18,7 +18,7 @@ public class TowerController{
 
 	public Gameplay level;
 	public String type;
-	public static float points = 30;
+	public static float points = 40;
 	public final int towerCost = 10; //TODO adjust later
 
 	public TowerController(Gameplay level){
