@@ -19,7 +19,7 @@ public class Tower{
 
 	public final float SHOT_RATE = 6; //Shots per second
 	public float shotTimer, maxShotTimer;
-	
+
 	public boolean isBeingBuilt;
 	public float buildingTimer, maxBuildingTime = 2; //How long it takes to build a tower
 
@@ -31,6 +31,7 @@ public class Tower{
 	public Sprite towerSprite;
 
 	public Mob nearestMob;
+	public ControllableMob nearestControllableMob;
 
 	public Tower(float x, float y, Gameplay level){
 		this.x = x;
@@ -43,6 +44,7 @@ public class Tower{
 		health = maxHealth;
 		shotTimer = 0;
 		maxShotTimer = 1f / SHOT_RATE;
+		nearestControllableMob = level.player;
 		//towerSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
 		//adjustSprite(towerSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
@@ -84,6 +86,14 @@ public class Tower{
 					shotTimer = 0;
 				}
 			}
+			//Only start shooting if controllable mob is in range
+			if(nearestControllableMob != null && distanceTo(nearestControllableMob.hitbox2) <= RADIUS){ 
+				shotTimer += delta;
+				if(shotTimer > maxShotTimer){
+					shootControllableMob();
+					shotTimer = 0;
+				}
+			}
 
 			//If a tower is destroyed
 			if(health <= 0){
@@ -120,7 +130,20 @@ public class Tower{
 		float targetY = nearestMob.y;
 		float deltaX = targetX - this.x;
 		float deltaY = targetY - this.y;
-		float theta = (float) Math.atan2(deltaY, deltaX); //angle from player to mouse
+		float theta = (float) Math.atan2(deltaY, deltaX); 
+
+		float vectorX = (float) Math.cos(theta) * SHOT_MAGNITUDE;
+		float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;
+		Projectile p = new Projectile(x, y, vectorX, vectorY, SHOT_LIFETIME, level);
+		level.projectiles.add(p);
+	}
+	
+	public void shootControllableMob(){
+		float targetX = nearestControllableMob.hitbox2.getX();
+		float targetY = nearestControllableMob.hitbox2.getY();
+		float deltaX = targetX - this.x;
+		float deltaY = targetY - this.y;
+		float theta = (float) Math.atan2(deltaY, deltaX); 
 
 		float vectorX = (float) Math.cos(theta) * SHOT_MAGNITUDE;
 		float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;

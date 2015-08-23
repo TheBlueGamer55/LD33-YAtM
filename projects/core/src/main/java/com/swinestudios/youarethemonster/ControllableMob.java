@@ -15,10 +15,10 @@ public class ControllableMob implements InputProcessor{
 	public float x, y;
 	public float velX, velY;
 	public float accelX, accelY;
-	
+
 	public final float frictionX = 0.6f;
 	public final float frictionY = 0.6f;
-	
+
 	public final float moveSpeedX = 2.0f;
 	public final float moveSpeedY = 2.0f;
 
@@ -29,13 +29,14 @@ public class ControllableMob implements InputProcessor{
 
 	//TODO adjust constants later
 	public float health, maxHealth = 100;
-	public final int RADIUS = 8; 
-	
+	public final int RADIUS = 16; 
+
 	public final float damage = 15f; //How much damage this mob does to a tower
 	public float damageTimer;
 	public float maxDamageTimer = 1f;
 
 	public Rectangle hitbox;
+	public Circle hitbox2; //Used by towers to detect controllable mobs
 	public Gameplay level;
 	public String type;
 
@@ -54,8 +55,10 @@ public class ControllableMob implements InputProcessor{
 		accelY = 0;
 		isActive = false;
 		this.level = level;
+		health = maxHealth;
 		type = "ControllableMob";		
 		hitbox = new Rectangle(x, y, 32, 32); //TODO adjust size later based on sprite
+		hitbox2 = new Circle(x, y, RADIUS);
 	}
 
 	public void render(Graphics g){
@@ -85,9 +88,31 @@ public class ControllableMob implements InputProcessor{
 
 		limitSpeed(true, true);
 		move();
-		
+
 		hitbox.setX(this.x);
 		hitbox.setY(this.y);
+		hitbox2.setX(this.x + hitbox.getWidth() / 2);
+		hitbox2.setY(this.y + hitbox.getHeight() / 2);
+
+		checkProjectileCollision();
+
+		//If the controllable mob dies, game over?
+		if(health <= 0){
+			//TODO game over
+			System.out.println("dead");
+		}
+	}
+	
+	public void checkProjectileCollision(){
+		for(int i = 0; i < level.projectiles.size(); i++){
+			Projectile temp = level.projectiles.get(i);
+			if(temp != null){
+				if(distanceTo(temp.hitbox) <= RADIUS * 2){ //If there is a collision
+					level.projectiles.remove(temp);
+					health -= temp.damage;
+				}
+			}
+		}
 	}
 
 	public void playerMovement(){
