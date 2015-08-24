@@ -13,6 +13,7 @@ public class Mob{
 	public int id;
 
 	public float x, y, velX, velY;
+	public float damage = 50; //How much damage a mob does if it kills itself when attacking the candy base
 	public float health, maxHealth = 50; //TODO adjust later
 	public char moveDirection;
 	public final int RADIUS = 8; //TODO should this be final?

@@ -35,6 +35,7 @@ public class Gameplay implements GameScreen{
 	public final int INITIAL_POINTS = 40;
 
 	public ControllableMob player;
+	public CandyBase candyBase;
 
 	public boolean gameOver = false;
 	public boolean gameWin = false;
@@ -145,6 +146,8 @@ public class Gameplay implements GameScreen{
 		player = new ControllableMob(320, 240, this);
 		camX = player.x - Gdx.graphics.getWidth() / 2;
 		camY = player.y - Gdx.graphics.getHeight() / 2;
+		
+		candyBase = new CandyBase(34 * 32, 10 * 32, this);
 
 		//Input handling
 		InputMultiplexer multiplexer = new InputMultiplexer();
@@ -162,6 +165,7 @@ public class Gameplay implements GameScreen{
 		g.translate((float) Math.round(camX), (float) Math.round(camY)); //Camera movement
 		map.draw(g, 0, 0);
 		renderMobs(g);
+		candyBase.render(g);
 		player.render(g);
 		renderTowers(g);
 		renderProjectiles(g);
@@ -199,7 +203,7 @@ public class Gameplay implements GameScreen{
 		}
 		if(gameWin){
 			g.setColor(Color.WHITE);
-			g.drawString("Congratulations! It took you " + waveNum + " waves to destroy the land!", camX + 200, camY + 240);
+			g.drawString("Congratulations! It took you " + waveNum + " wave(s) to destroy the base!", camX + 200, camY + 240);
 		}
 		if(startingNewWave){
 			g.setColor(Color.WHITE);
@@ -218,6 +222,7 @@ public class Gameplay implements GameScreen{
 			camY = player.y - Gdx.graphics.getHeight() / 2;
 
 			updateMobs(delta);
+			candyBase.update(delta);
 			player.update(delta);
 			updateTowers(delta);
 			updateProjectiles(delta);
