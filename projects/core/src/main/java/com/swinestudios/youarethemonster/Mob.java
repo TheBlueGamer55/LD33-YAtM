@@ -15,6 +15,11 @@ public class Mob{
 	public float x, y, velX, velY;
 	public float damage = 50; //How much damage a mob does if it kills itself when attacking the candy base
 	public float health, maxHealth = 50; //TODO adjust later
+	
+	public final float healthBarMaxWidth = 20;
+	public final float healthBarHeight = 4;
+	public final float healthBarYOffset = -8;
+	
 	public char moveDirection;
 	public final int RADIUS = 8; //TODO should this be final?
 	public final int POINT_VALUE = 10; //TODO adjust later, how many points the hero player gets if a mob dies
@@ -82,6 +87,11 @@ public class Mob{
 			g.setColor(Color.DARK_GRAY);
 			g.fillCircle(x, y, RADIUS);
 		}
+		//Draw health bar
+		g.setColor(Color.RED);
+		g.fillRect(x - healthBarMaxWidth / 2, y + healthBarYOffset, healthBarMaxWidth, healthBarHeight);
+		g.setColor(Color.GREEN);
+		g.fillRect(x - healthBarMaxWidth / 2, y + healthBarYOffset, healthBarMaxWidth * (health / maxHealth), healthBarHeight);
 	}
 	
 	

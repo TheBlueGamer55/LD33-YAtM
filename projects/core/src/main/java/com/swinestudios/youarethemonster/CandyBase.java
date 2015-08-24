@@ -14,6 +14,11 @@ public class CandyBase{
 	public float x, y;
 
 	public float health, maxHealth = 500; //TODO adjust later
+	
+	public final float healthBarMaxWidth = 64;
+	public final float healthBarHeight = 6;
+	public final float healthBarYOffset = -20;
+	
 	public final int RADIUS = 32; 
 
 	public boolean isActive;
@@ -45,7 +50,11 @@ public class CandyBase{
 				g.drawCircle(x,  y, RADIUS / 4);
 				g.drawCircle(x,  y, RADIUS);
 			}
-			g.drawString("Health: " + health, x, y);
+			//Draw health bar
+			g.setColor(Color.RED);
+			g.fillRect(x - healthBarMaxWidth / 2, y + healthBarYOffset, healthBarMaxWidth, healthBarHeight);
+			g.setColor(Color.GREEN);
+			g.fillRect(x - healthBarMaxWidth / 2, y + healthBarYOffset, healthBarMaxWidth * (health / maxHealth), healthBarHeight);
 		}
 	}
 

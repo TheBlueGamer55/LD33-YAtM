@@ -30,6 +30,11 @@ public class ControllableMob implements InputProcessor{
 
 	//TODO adjust constants later
 	public float health, maxHealth = 100;
+
+	public final float healthBarMaxWidth = 36;
+	public final float healthBarHeight = 6;
+	public final float healthBarYOffset = -16;
+
 	public final int RADIUS = 16; 
 
 	public final float SHOT_MAGNITUDE = 4.0f; //How strong a mob shoots a projectile
@@ -85,6 +90,11 @@ public class ControllableMob implements InputProcessor{
 				//TODO //draw still images if not moving with appropriate direction
 			}
 		}
+		//Draw health bar
+		g.setColor(Color.RED);
+		g.fillRect(hitbox2.getX() - healthBarMaxWidth / 2, hitbox2.getY() + healthBarYOffset, healthBarMaxWidth, healthBarHeight);
+		g.setColor(Color.GREEN);
+		g.fillRect(hitbox2.getX() - healthBarMaxWidth / 2, hitbox2.getY() + healthBarYOffset, healthBarMaxWidth * (health / maxHealth), healthBarHeight);
 	}
 
 	public void update(float delta){

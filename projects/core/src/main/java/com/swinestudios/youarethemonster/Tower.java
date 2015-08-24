@@ -14,6 +14,11 @@ public class Tower{
 	public float x, y;
 
 	public float health, maxHealth = 100; //TODO adjust later
+	
+	public final float healthBarMaxWidth = 40;
+	public final float healthBarHeight = 6;
+	public final float healthBarYOffset = -16;
+	
 	public final int RADIUS = 80; //TODO should this be final?
 	public final float SHOT_MAGNITUDE = 4.0f; //How strong a tower shoots a projectile
 	public final float SHOT_LIFETIME = 0.2f; //How long a projectile lasts
@@ -62,7 +67,11 @@ public class Tower{
 				g.drawCircle(x,  y, RADIUS / 4);
 				g.drawCircle(x,  y, RADIUS);
 			}
-			g.drawString("Health: " + health, x, y);
+			//Draw health bar
+			g.setColor(Color.RED);
+			g.fillRect(x - healthBarMaxWidth / 2, y + healthBarYOffset, healthBarMaxWidth, healthBarHeight);
+			g.setColor(Color.GREEN);
+			g.fillRect(x - healthBarMaxWidth / 2, y + healthBarYOffset, healthBarMaxWidth * (health / maxHealth), healthBarHeight);
 			if(isBeingBuilt){
 				g.drawString("Building... " + (maxBuildingTime - buildingTimer), x, y + 6);
 			}
