@@ -176,6 +176,11 @@ public class CandyBase{
 				//TODO adjust hitboxes when sprites are done
 				if(distanceTo(temp.hitbox) <= RADIUS * 2){ //If there is a collision
 					temp.isActive = false;
+					temp.health = 0;
+					temp.x = -100;
+					temp.y = -100;
+					temp.hitbox.setX(-100);
+					temp.hitbox.setY(-100);
 					level.mobs.remove(temp);
 					health -= temp.damage;
 				}
