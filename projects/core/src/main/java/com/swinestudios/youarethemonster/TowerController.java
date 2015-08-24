@@ -27,7 +27,7 @@ public class TowerController{
 		type = "TowerController";
 		spawnPoints = new ArrayList<Point>();
 		random = new Random();
-		//TODO hard-coded spawnpoints - change later
+		//TODO hard-coded spawnpoints - change later based on map
 		spawnPoints.add(new Point(10, 10));
 		spawnPoints.add(new Point(200, 10));
 		spawnPoints.add(new Point(400, 10));

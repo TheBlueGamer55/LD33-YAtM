@@ -26,10 +26,17 @@ public class ControllableMob implements InputProcessor{
 	public final float maxSpeedY = 2.0f;
 
 	public boolean isActive;
+	public boolean isAttacking;
 
 	//TODO adjust constants later
 	public float health, maxHealth = 100;
 	public final int RADIUS = 16; 
+
+	public final float SHOT_MAGNITUDE = 4.0f; //How strong a mob shoots a projectile
+	public final float SHOT_LIFETIME = 0.2f; //How long a projectile lasts
+
+	public final float SHOT_RATE = 2; //Shots per second
+	public float shotTimer, maxShotTimer;
 
 	public final float damage = 15f; //How much damage this mob does to a tower
 	public float damageTimer;
@@ -54,8 +61,11 @@ public class ControllableMob implements InputProcessor{
 		accelX = 0;
 		accelY = 0;
 		isActive = false;
+		isAttacking = false;
 		this.level = level;
 		health = maxHealth;
+		shotTimer = 0;
+		maxShotTimer = 1f / SHOT_RATE;
 		type = "ControllableMob";		
 		hitbox = new Rectangle(x, y, 32, 32); //TODO adjust size later based on sprite
 		hitbox2 = new Circle(x, y, RADIUS);
@@ -64,11 +74,16 @@ public class ControllableMob implements InputProcessor{
 	public void render(Graphics g){
 		g.setColor(Color.BLUE);
 		g.fillRect(x, y, hitbox.width, hitbox.height);
-		if(velX != 0 || velY != 0){ 
-			//TODO if moving, draw animated sprites
+		if(isAttacking){
+			//TODO if attacking, draw attack animation
 		}
-		else{ 
-			//TODO //draw still images if not moving with appropriate direction
+		else{
+			if(velX != 0 || velY != 0){ 
+				//TODO if moving, draw animated sprites
+			}
+			else{ 
+				//TODO //draw still images if not moving with appropriate direction
+			}
 		}
 	}
 
@@ -87,7 +102,9 @@ public class ControllableMob implements InputProcessor{
 		}
 
 		limitSpeed(true, true);
-		move();
+		if(!isAttacking){ //Can't move while attacking
+			move();
+		}
 
 		hitbox.setX(this.x);
 		hitbox.setY(this.y);
@@ -96,10 +113,31 @@ public class ControllableMob implements InputProcessor{
 
 		checkProjectileCollision();
 
+		if(isAttacking){
+			shotTimer += delta;
+			if(shotTimer > maxShotTimer){
+				attack();
+				shotTimer = 0;
+			}
+		}
+
 		//If the controllable mob dies, game over
 		if(health <= 0){
 			//TODO game over
 			level.gameOver = true;
+		}
+	}
+
+	/*
+	 * TODO Attack by shooting projectiles in 8 surrounding directions
+	 */
+	public void attack(){
+		for(int i = 0; i < 8; i++){
+			double theta = Math.PI / 4f * i;
+			float vectorX = (float) Math.cos(theta) * SHOT_MAGNITUDE;
+			float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;
+			MobProjectile p = new MobProjectile(this.hitbox2.getX(), this.hitbox2.getY(), vectorX, vectorY, SHOT_LIFETIME, level);
+			level.mobProjectiles.add(p);
 		}
 	}
 
@@ -292,11 +330,17 @@ public class ControllableMob implements InputProcessor{
 
 	@Override
 	public boolean keyDown(int keycode) {
+		if(keycode == Keys.SPACE){
+			isAttacking = true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
+		if(keycode == Keys.SPACE){
+			isAttacking = false;
+		}
 		return false;
 	}
 

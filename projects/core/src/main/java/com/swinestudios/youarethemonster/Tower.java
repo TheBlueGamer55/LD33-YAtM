@@ -80,6 +80,8 @@ public class Tower{
 				}
 				return; //Skip all the logic until a tower is finished building
 			}
+			
+			checkProjectileCollision();
 
 			//Tower only targets path-following mobs
 			if(autoMobsOnly){
@@ -130,6 +132,23 @@ public class Tower{
 				}
 				if(distanceTo(temp.hitbox) < distanceTo(nearestMob.hitbox)){ //If this mob is the new closest mob
 					nearestMob = temp;
+				}
+			}
+		}
+	}
+	
+	/*
+	 * Check for projectiles from any mobs
+	 */
+	public void checkProjectileCollision(){
+		for(int i = 0; i < level.mobProjectiles.size(); i++){
+			MobProjectile temp = level.mobProjectiles.get(i);
+			if(temp != null && temp.isActive){
+				//TODO adjust hitboxes when sprites are done
+				if(distanceTo(temp.hitbox) <= RADIUS * 2){ //If there is a collision
+					temp.isActive = false;
+					level.mobProjectiles.remove(temp);
+					health -= temp.damage;
 				}
 			}
 		}

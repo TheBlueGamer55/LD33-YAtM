@@ -17,12 +17,21 @@ public class Mob{
 	public char moveDirection;
 	public final int RADIUS = 8; //TODO should this be final?
 	public final int POINT_VALUE = 10; //TODO adjust later, how many points the hero player gets if a mob dies
-	float moveSpeed;//The speed at which this mob moves in the UDLR directions
 	
+	public final float SHOT_MAGNITUDE = 4.0f; //How strong a mob shoots a projectile
+	public final float SHOT_LIFETIME = 0.2f; //How long a projectile lasts
+	public final float SHOT_RANGE = RADIUS * 3; //The range that a mob can detect towers
+
+	public final float SHOT_RATE = 3; //Shots per second
+	public float shotTimer, maxShotTimer;
+	public boolean isShooting = false;
+	
+	public Tower nearestTower;
+	
+	float moveSpeed;//The speed at which this mob moves in the UDLR directions
 	
 	//PATHING VARIABLES
 	public Waypoint target;//Where this is aiming to go
-	
 	
 	public boolean isActive;
 
@@ -38,6 +47,8 @@ public class Mob{
 		this.level = level;
 		type = "Mob";
 		health = maxHealth;
+		shotTimer = 0;
+		maxShotTimer = 1f / SHOT_RATE;
 		//mobSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
 		//adjustSprite(mobSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
@@ -74,14 +85,21 @@ public class Mob{
 	
 	
 	public void update(float delta){
-		waypointPathingUpdate();
-		directedMovement();
-		//TODO may need to rewrite movement later on
-		x += velX;
-		y += velY;
-		
-		hitbox.setX(x);
-		hitbox.setY(y);
+		//TODO what happens while a mob is shooting?
+		if(isShooting){
+			//TODO shoot tower
+		}
+		//Move along the waypoints
+		else{
+			waypointPathingUpdate();
+			directedMovement();
+			
+			x += velX;
+			y += velY;
+			
+			hitbox.setX(x);
+			hitbox.setY(y);
+		}
 		
 		checkProjectileCollision();
 		
@@ -134,6 +152,9 @@ public class Mob{
 		}
 	}
 	
+	/*
+	 * Check for projectiles from any tower
+	 */
 	public void checkProjectileCollision(){
 		for(int i = 0; i < level.projectiles.size(); i++){
 			Projectile temp = level.projectiles.get(i);

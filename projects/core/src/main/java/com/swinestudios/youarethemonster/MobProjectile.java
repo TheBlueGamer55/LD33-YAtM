@@ -5,10 +5,10 @@ import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
-public class Projectile{
+public class MobProjectile{
 
 	public float x, y, velX, velY;
-	public float damage = 10; //How much damage this projectile does to a mob
+	public float damage = 1; //How much damage this projectile does to a mob
 	public float lifeTimer = 0, maxLifeTimer; //For how long does this projectile last
 	public final int RADIUS = 2; 
 
@@ -19,7 +19,7 @@ public class Projectile{
 	public String type;
 	public Sprite projectileSprite;
 
-	public Projectile(float x, float y, float velX, float velY, float lifetime, Gameplay level){
+	public MobProjectile(float x, float y, float velX, float velY, float lifetime, Gameplay level){
 		this.x = x;
 		this.y = y;
 		this.velX = velX;
@@ -27,7 +27,7 @@ public class Projectile{
 		maxLifeTimer = lifetime;
 		isActive = true;
 		this.level = level;
-		type = "Projectile";
+		type = "MobProjectile";
 		//projectileSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
 		//adjustSprite(projectileSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);

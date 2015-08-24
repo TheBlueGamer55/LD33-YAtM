@@ -17,6 +17,7 @@ import org.mini2Dx.tiled.exception.TiledException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 
 public class Gameplay implements GameScreen{
@@ -26,6 +27,7 @@ public class Gameplay implements GameScreen{
 	public ArrayList<Mob> mobs;
 	public ArrayList<Tower> towers;
 	public ArrayList<Projectile> projectiles;
+	public ArrayList<MobProjectile> mobProjectiles;
 	public ArrayList<Block> solids;
 
 	public ArrayList<Waypoint> waypoints;
@@ -86,6 +88,7 @@ public class Gameplay implements GameScreen{
 		mobs = new ArrayList<Mob>();
 		towers = new ArrayList<Tower>();
 		projectiles = new ArrayList<Projectile>();
+		mobProjectiles = new ArrayList<MobProjectile>();
 		solids = new ArrayList<Block>();
 		waypoints = new  ArrayList<Waypoint>();
 
@@ -116,6 +119,11 @@ public class Gameplay implements GameScreen{
 		player = new ControllableMob(320, 240, this);
 		camX = player.x - Gdx.graphics.getWidth() / 2;
 		camY = player.y - Gdx.graphics.getHeight() / 2;
+
+		//Input handling
+		InputMultiplexer multiplexer = new InputMultiplexer();
+		multiplexer.addProcessor(player);
+		Gdx.input.setInputProcessor(multiplexer);
 	}
 
 	@Override
@@ -131,6 +139,7 @@ public class Gameplay implements GameScreen{
 		player.render(g);
 		renderTowers(g);
 		renderProjectiles(g);
+		renderMobProjectiles(g);
 		//TODO temporary code - remove later
 		towerController.render(g);
 		for(int i = 0; i < solids.size(); i++){
@@ -171,6 +180,7 @@ public class Gameplay implements GameScreen{
 			player.update(delta);
 			updateTowers(delta);
 			updateProjectiles(delta);
+			updateMobProjectiles(delta);
 			//TODO temporary code - remove later
 			towerController.update(delta);
 
@@ -238,6 +248,18 @@ public class Gameplay implements GameScreen{
 	public void updateProjectiles(float delta){
 		for(int i = 0; i < projectiles.size(); i++){
 			projectiles.get(i).update(delta);
+		}
+	}
+
+	public void renderMobProjectiles(Graphics g){
+		for(int i = 0; i < mobProjectiles.size(); i++){
+			mobProjectiles.get(i).render(g);
+		}
+	}
+
+	public void updateMobProjectiles(float delta){
+		for(int i = 0; i < mobProjectiles.size(); i++){
+			mobProjectiles.get(i).update(delta);
 		}
 	}
 
