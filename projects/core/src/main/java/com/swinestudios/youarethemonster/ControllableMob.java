@@ -27,15 +27,17 @@ public class ControllableMob implements InputProcessor{
 
 	public boolean isActive;
 	public boolean isAttacking;
+	public boolean isDraining;
 
 	//TODO adjust constants later
-	public float health, maxHealth = 100;
+	public float health, maxHealth = 200;
 
 	public final float healthBarMaxWidth = 36;
 	public final float healthBarHeight = 6;
 	public final float healthBarYOffset = -16;
 
 	public final int RADIUS = 16; 
+	public final int DRAIN_RANGE = 128;
 
 	public final float SHOT_MAGNITUDE = 4.0f; //How strong a mob shoots a projectile
 	public final float SHOT_LIFETIME = 0.2f; //How long a projectile lasts
@@ -46,6 +48,10 @@ public class ControllableMob implements InputProcessor{
 	public final float damage = 15f; //How much damage this mob does to a tower
 	public float damageTimer;
 	public float maxDamageTimer = 1f;
+	
+	public final float drainAmount = 2f; //How much health is drained from other mobs
+	public float drainTimer;
+	public float maxDrainTimer = 0.1f;
 
 	public Rectangle hitbox;
 	public Circle hitbox2; //Used by towers to detect controllable mobs
@@ -67,9 +73,11 @@ public class ControllableMob implements InputProcessor{
 		accelY = 0;
 		isActive = false;
 		isAttacking = false;
+		isDraining = false;
 		this.level = level;
 		health = maxHealth;
 		shotTimer = 0;
+		drainTimer = 0;
 		maxShotTimer = 1f / SHOT_RATE;
 		type = "ControllableMob";		
 		hitbox = new Rectangle(x, y, 32, 32); //TODO adjust size later based on sprite
@@ -112,7 +120,7 @@ public class ControllableMob implements InputProcessor{
 		}
 
 		limitSpeed(true, true);
-		if(!isAttacking){ //Can't move while attacking
+		if(!isAttacking && !isDraining){ //Can't move while attacking
 			move();
 		}
 
@@ -130,6 +138,13 @@ public class ControllableMob implements InputProcessor{
 				shotTimer = 0;
 			}
 		}
+		if(isDraining){
+			drainTimer += delta;
+			if(drainTimer > maxDrainTimer){
+				drainHealth();
+				drainTimer = 0;
+			}
+		}
 
 		//If the controllable mob dies, game over
 		if(health <= 0){
@@ -139,7 +154,7 @@ public class ControllableMob implements InputProcessor{
 	}
 
 	/*
-	 * TODO Attack by shooting projectiles in 8 surrounding directions
+	 * Attack by shooting projectiles in 8 surrounding directions
 	 */
 	public void attack(){
 		for(int i = 0; i < 8; i++){
@@ -148,6 +163,40 @@ public class ControllableMob implements InputProcessor{
 			float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;
 			MobProjectile p = new MobProjectile(this.hitbox2.getX(), this.hitbox2.getY(), vectorX, vectorY, SHOT_LIFETIME, level);
 			level.mobProjectiles.add(p);
+		}
+	}
+	
+	/*
+	 * Drain the health of all mobs within range
+	 */
+	public void drainHealth(){
+		int amount = 0;
+		for(int i = 0; i < level.mobs.size(); i++){
+			//Can't drain if already at max health
+			if(health == maxHealth){
+				return;
+			}
+			Mob temp = level.mobs.get(i);
+			System.out.println(distanceTo(temp.hitbox)); //TODO remove later
+			if(distanceTo(temp.hitbox) <= DRAIN_RANGE){
+				//If the drain amount is more than the mob's remaining health
+				if(drainAmount >= temp.health){
+					//Only heal for the remaining health of the mob
+					amount += temp.health;
+				}
+				else{ //Otherwise, heal the normal drain amount
+					amount += drainAmount;
+				}
+				temp.health -= drainAmount;
+				//Make sure we only heal up to maxHealth
+				if(health + amount > maxHealth){
+					health = maxHealth;
+				}
+				else{
+					health += amount;
+				}
+				//TODO play screaming sound effect when mobs are being drained
+			}
 		}
 	}
 
@@ -343,6 +392,9 @@ public class ControllableMob implements InputProcessor{
 		if(keycode == Keys.SPACE){
 			isAttacking = true;
 		}
+		if(keycode == Keys.SHIFT_LEFT){
+			isDraining = true;
+		}
 		return false;
 	}
 
@@ -350,6 +402,9 @@ public class ControllableMob implements InputProcessor{
 	public boolean keyUp(int keycode) {
 		if(keycode == Keys.SPACE){
 			isAttacking = false;
+		}
+		if(keycode == Keys.SHIFT_LEFT){
+			isDraining = false;
 		}
 		return false;
 	}

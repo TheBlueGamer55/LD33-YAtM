@@ -14,7 +14,7 @@ public class Mob{
 
 	public float x, y, velX, velY;
 	public float damage = 50; //How much damage a mob does if it kills itself when attacking the candy base
-	public float health, maxHealth = 50; //TODO adjust later
+	public float health, maxHealth = 30; //TODO adjust later
 	
 	public final float healthBarMaxWidth = 20;
 	public final float healthBarHeight = 4;
