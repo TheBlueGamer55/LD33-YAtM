@@ -112,8 +112,6 @@ public class ControllableMob implements InputProcessor{
 	}
 
 	public void update(float delta){
-		//TODO remove later
-		System.out.println(distanceTo(level.cursor));
 		accelX = 0;
 		accelY = 0;
 		playerMovement();
@@ -165,8 +163,8 @@ public class ControllableMob implements InputProcessor{
 	 * Attack by shooting projectiles in 8 surrounding directions
 	 */
 	public void attack(){
-		for(int i = 0; i < 8; i++){
-			double theta = Math.PI / 4f * i;
+		for(int i = 0; i < 12; i++){
+			double theta = Math.PI / 6f * i;
 			float vectorX = (float) Math.cos(theta) * SHOT_MAGNITUDE;
 			float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;
 			MobProjectile p = new MobProjectile(this.hitbox2.getX(), this.hitbox2.getY(), vectorX, vectorY, SHOT_LIFETIME, level);

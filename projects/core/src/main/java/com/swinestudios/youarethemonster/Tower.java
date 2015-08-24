@@ -36,7 +36,7 @@ public class Tower{
 
 	public boolean isActive;
 	public boolean autoMobsOnly;
-
+	
 	public Circle hitbox;
 	public Gameplay level;
 	public String type;
@@ -47,6 +47,7 @@ public class Tower{
 	public static Sound shotSound = Gdx.audio.newSound(Gdx.files.internal("LessExplosiveLaunch.wav"));
 	public static Sound towerHit = Gdx.audio.newSound(Gdx.files.internal("TowerHit.wav"));
 	public static Sound destroyedSound = Gdx.audio.newSound(Gdx.files.internal("TowerDestroyed.wav"));
+	public static Sound constructionSound = Gdx.audio.newSound(Gdx.files.internal("TowerConstruction2.wav"));
 	public static Sound builtSound = Gdx.audio.newSound(Gdx.files.internal("TowerBuilt.wav"));
 	
 	public Mob nearestMob;
@@ -57,6 +58,7 @@ public class Tower{
 		this.y = y;
 		isActive = true;
 		isBeingBuilt = true;
+		constructionSound.loop();
 		buildingTimer = 0;
 		this.level = level;
 		type = "Tower";
@@ -100,6 +102,7 @@ public class Tower{
 				if(buildingTimer > maxBuildingTime){
 					isBeingBuilt = false;
 					buildingTimer = 0;
+					constructionSound.stop();
 					builtSound.play();
 				}
 				return; //Skip all the logic until a tower is finished building
