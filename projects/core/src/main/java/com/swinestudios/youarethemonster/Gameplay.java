@@ -18,11 +18,14 @@ import org.mini2Dx.tiled.exception.TiledException;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 
 public class Gameplay implements GameScreen{
 
 	public static int ID = 2;
+	
+	public static Sound theme;
 
 	public ArrayList<Mob> mobs;
 	public ArrayList<Tower> towers;
@@ -74,6 +77,7 @@ public class Gameplay implements GameScreen{
 
 	@Override
 	public void initialise(GameContainer gc){
+		theme = Gdx.audio.newSound(Gdx.files.internal("gameBGM.ogg"));
 		try{
 			map = new TiledMap(Gdx.files.internal("testmap.tmx"));
 		} catch (TiledException e) {
@@ -87,7 +91,7 @@ public class Gameplay implements GameScreen{
 
 	@Override
 	public void postTransitionIn(Transition t){
-
+		theme.loop();
 	}
 
 	@Override
@@ -96,6 +100,7 @@ public class Gameplay implements GameScreen{
 		paused = false;
 		gameWin = false;
 		startingNewWave = false;
+		theme.stop();
 	}
 
 	@Override

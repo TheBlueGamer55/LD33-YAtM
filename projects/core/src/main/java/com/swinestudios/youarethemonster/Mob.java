@@ -119,8 +119,8 @@ public class Mob{
 			//Until the mob is completely removed, move it far away
 			x = -100;
 			y = -100;
-			hitbox.setX(x);
-			hitbox.setY(y);
+			hitbox.setX(-100);
+			hitbox.setY(-100);
 			level.mobs.remove(this);
 			TowerController.points += POINT_VALUE;
 		}

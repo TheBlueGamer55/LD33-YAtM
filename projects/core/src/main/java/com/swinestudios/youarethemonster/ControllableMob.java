@@ -45,7 +45,7 @@ public class ControllableMob implements InputProcessor{
 	public final float SHOT_RATE = 2; //Shots per second
 	public float shotTimer, maxShotTimer;
 
-	public final float damage = 15f; //How much damage this mob does to a tower
+	public final float damage = 25f; //How much damage this mob does to a tower
 	public float damageTimer;
 	public float maxDamageTimer = 1f;
 	
