@@ -8,7 +8,7 @@ import org.mini2Dx.core.graphics.Sprite;
 public class MobProjectile{
 
 	public float x, y, velX, velY;
-	public float damage = 1; //How much damage this projectile does to a mob
+	public float damage = 5; //How much damage this projectile does to a tower
 	public float lifeTimer = 0, maxLifeTimer; //For how long does this projectile last
 	public final int RADIUS = 2; 
 

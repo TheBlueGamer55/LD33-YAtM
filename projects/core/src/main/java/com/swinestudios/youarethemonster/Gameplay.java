@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.geom.Rectangle;
+import org.mini2Dx.core.graphics.Animation;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
@@ -248,7 +250,7 @@ public class Gameplay implements GameScreen{
 					if(cursor.overlaps(mobSpawnButton)){
 						if(mobCount > 0){
 							mobs.add(new Mob(home.x, home.y, this, true));
-							spawnSound.play();
+							spawnSound.play(0.5f);
 							//Costs points to spawn a mob
 							mobCount--;
 						}
@@ -402,6 +404,15 @@ public class Gameplay implements GameScreen{
 			}
 		}
 
+	}
+	
+	/*
+	 * Changes the size of all given frames
+	 */
+	public static void setFrameSizes(Animation<Sprite> a, float width, float height){
+		for(int i = 0; i < a.getNumberOfFrames(); i++){
+			a.getFrame(i).setSize(width, height);
+		}
 	}
 
 	@Override

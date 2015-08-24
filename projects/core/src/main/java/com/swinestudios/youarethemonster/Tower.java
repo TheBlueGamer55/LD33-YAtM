@@ -1,5 +1,7 @@
 package com.swinestudios.youarethemonster;
 
+import java.util.Random;
+
 import org.mini2Dx.core.geom.Circle;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
@@ -9,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 
 public class Tower{
 
@@ -16,11 +19,12 @@ public class Tower{
 
 	public float health, maxHealth = 100; //TODO adjust later
 	
-	public final float healthBarMaxWidth = 40;
+	public final float healthBarMaxWidth = 52;
 	public final float healthBarHeight = 6;
-	public final float healthBarYOffset = -16;
+	public final float healthBarYOffset = -20;
 	
-	public final int RADIUS = 80; //TODO should this be final?
+	public final int RADIUS = 96; //TODO should this be final?
+	public final int HITBOX_RADIUS = 20;
 	public final float SHOT_MAGNITUDE = 4.0f; //How strong a tower shoots a projectile
 	public final float SHOT_LIFETIME = 0.2f; //How long a projectile lasts
 
@@ -31,15 +35,20 @@ public class Tower{
 	public float buildingTimer, maxBuildingTime = 2; //How long it takes to build a tower
 
 	public boolean isActive;
-	public boolean autoMobsOnly = true;
+	public boolean autoMobsOnly;
 
 	public Circle hitbox;
 	public Gameplay level;
 	public String type;
 	public Sprite towerSprite;
 	
+	public Random random = new Random();
+	
 	public static Sound shotSound = Gdx.audio.newSound(Gdx.files.internal("LessExplosiveLaunch.wav"));
-
+	public static Sound towerHit = Gdx.audio.newSound(Gdx.files.internal("TowerHit.wav"));
+	public static Sound destroyedSound = Gdx.audio.newSound(Gdx.files.internal("TowerDestroyed.wav"));
+	public static Sound builtSound = Gdx.audio.newSound(Gdx.files.internal("TowerBuilt.wav"));
+	
 	public Mob nearestMob;
 	public ControllableMob nearestControllableMob;
 
@@ -55,7 +64,9 @@ public class Tower{
 		shotTimer = 0;
 		maxShotTimer = 1f / SHOT_RATE;
 		nearestControllableMob = level.player;
-		//towerSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
+		
+		setAutoMobsOnly(random.nextBoolean());
+		
 		//adjustSprite(towerSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
 	}
@@ -63,13 +74,13 @@ public class Tower{
 	public void render(Graphics g){
 		if(isActive){
 			if(towerSprite != null){
-				g.drawSprite(towerSprite, x, y);
+				g.drawSprite(towerSprite, x - towerSprite.getWidth() / 2, y - towerSprite.getHeight() / 2);
 			}
-			else{ //TODO Temporary shape placeholder
-				g.setColor(Color.GREEN);
-				g.drawCircle(x,  y, RADIUS / 4);
-				g.drawCircle(x,  y, RADIUS);
-			}
+			//TODO Temporary shape placeholder
+			g.setColor(Color.GREEN);
+			g.drawCircle(x,  y, RADIUS / 4);
+			g.drawCircle(x,  y, RADIUS);
+			
 			//Draw health bar
 			g.setColor(Color.RED);
 			g.fillRect(x - healthBarMaxWidth / 2, y + healthBarYOffset, healthBarMaxWidth, healthBarHeight);
@@ -89,6 +100,7 @@ public class Tower{
 				if(buildingTimer > maxBuildingTime){
 					isBeingBuilt = false;
 					buildingTimer = 0;
+					builtSound.play();
 				}
 				return; //Skip all the logic until a tower is finished building
 			}
@@ -122,6 +134,7 @@ public class Tower{
 			//If a tower is destroyed
 			if(health <= 0){
 				isActive = false;
+				destroyedSound.play();
 				//Until the tower is completely removed, move it far away
 				x = -500;
 				y = -500;
@@ -129,7 +142,7 @@ public class Tower{
 			}
 			//TODO debug code - remove later
 			if(Gdx.input.isKeyJustPressed(Keys.T)){
-				health -= 10;
+				dealDamage(10);
 			}
 		}
 	}
@@ -157,10 +170,10 @@ public class Tower{
 			MobProjectile temp = level.mobProjectiles.get(i);
 			if(temp != null && temp.isActive){
 				//TODO adjust hitboxes when sprites are done
-				if(distanceTo(temp.hitbox) <= RADIUS * 2){ //If there is a collision
+				if(distanceTo(temp.hitbox) <= HITBOX_RADIUS){ //If there is a collision
 					temp.isActive = false;
 					level.mobProjectiles.remove(temp);
-					health -= temp.damage;
+					dealDamage(temp.damage);
 				}
 			}
 		}
@@ -193,9 +206,20 @@ public class Tower{
 		level.projectiles.add(p);
 		shotSound.play(1, 1.8f, 0);
 	}
+	
+	public void dealDamage(float amount){
+		health -= amount;
+		towerHit.play();
+	}
 
 	public void setAutoMobsOnly(boolean flag){
 		autoMobsOnly = flag;
+		if(autoMobsOnly){
+			towerSprite = new Sprite(new Texture(Gdx.files.internal("candyTower1.png")));
+		}
+		else{
+			towerSprite = new Sprite(new Texture(Gdx.files.internal("candyTower2.png")));
+		}
 	}
 
 	/*

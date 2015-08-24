@@ -20,7 +20,7 @@ public class CandyBase{
 	public final float healthBarYOffset = -20;
 
 	public final int RADIUS = 32;
-	public final int SHOT_RADIUS = 80;
+	public final int SHOT_RADIUS = 100;
 	
 	public final float SHOT_MAGNITUDE = 4.0f; //How strong a tower shoots a projectile
 	public final float SHOT_LIFETIME = 0.2f; //How long a projectile lasts
@@ -103,7 +103,7 @@ public class CandyBase{
 			}
 			//TODO debug code - remove later
 			if(Gdx.input.isKeyJustPressed(Keys.T)){
-				health -= 10;
+				dealDamage(10);
 			}
 		}
 	}
@@ -160,7 +160,7 @@ public class CandyBase{
 				if(distanceTo(temp.hitbox) <= RADIUS * 2){ //If there is a collision
 					temp.isActive = false;
 					level.mobProjectiles.remove(temp);
-					health -= temp.damage;
+					dealDamage(temp.damage);
 				}
 			}
 		}
@@ -182,10 +182,15 @@ public class CandyBase{
 					temp.hitbox.setX(-100);
 					temp.hitbox.setY(-100);
 					level.mobs.remove(temp);
-					health -= temp.damage;
+					dealDamage(temp.damage);
 				}
 			}
 		}
+	}
+	
+	public void dealDamage(float amount){
+		health -= amount;
+		Tower.towerHit.play();
 	}
 
 	/*

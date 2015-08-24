@@ -10,10 +10,13 @@ import org.mini2Dx.core.screen.transition.FadeOutTransition;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 
 public class MainMenu implements GameScreen{
 	
 	public static int ID = 1;
+	
+	public static Sound menuTheme;
 	
 	@Override
 	public int getId(){
@@ -22,33 +25,17 @@ public class MainMenu implements GameScreen{
 
 	@Override
 	public void initialise(GameContainer gc){
-		
-	}
-
-	@Override
-	public void interpolate(GameContainer gc, float delta){
-	}
-	
-	@Override
-	public void onPause() {
-	}
-
-	@Override
-	public void onResize(int arg0, int arg1) {
-	}
-
-	@Override
-	public void onResume() {
+		menuTheme = Gdx.audio.newSound(Gdx.files.internal("menuTheme.ogg"));
 	}
 
 	@Override
 	public void postTransitionIn(Transition t){
-		
+		menuTheme.loop();
 	}
 
 	@Override
 	public void postTransitionOut(Transition t){
-		
+		menuTheme.stop();
 	}
 
 	@Override
@@ -74,6 +61,22 @@ public class MainMenu implements GameScreen{
 		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){
 			Gdx.app.exit();
 		}
+	}
+	
+	@Override
+	public void interpolate(GameContainer gc, float delta){
+	}
+	
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onResize(int arg0, int arg1) {
+	}
+
+	@Override
+	public void onResume() {
 	}
 
 }

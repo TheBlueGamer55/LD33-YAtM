@@ -2,10 +2,13 @@ package com.swinestudios.youarethemonster;
 
 import org.mini2Dx.core.geom.Circle;
 import org.mini2Dx.core.geom.Rectangle;
+import org.mini2Dx.core.graphics.Animation;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 
 public class Mob{
 	
@@ -18,7 +21,13 @@ public class Mob{
 	
 	public final float healthBarMaxWidth = 20;
 	public final float healthBarHeight = 4;
-	public final float healthBarYOffset = -8;
+	public final float healthBarYOffset = -12;
+	
+	public boolean facingRight, facingLeft;
+	
+	public Sprite left1, left2, right1, right2;
+	public Animation<Sprite> mobLeft, mobRight, mobCurrent;
+	public float animationSpeed = 0.1f; //How many seconds a frame lasts
 	
 	public char moveDirection;
 	public final int RADIUS = 8; //TODO should this be final?
@@ -44,7 +53,6 @@ public class Mob{
 	public Circle hitbox;
 	public Gameplay level;
 	public String type;
-	public Sprite mobSprite;
 
 	public Mob(float x, float y, Gameplay level, boolean spawnAtHome){
 		this.x = x;
@@ -55,8 +63,36 @@ public class Mob{
 		health = maxHealth;
 		shotTimer = 0;
 		maxShotTimer = 1f / SHOT_RATE;
-		//mobSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
-		//adjustSprite(mobSprite);
+		
+		facingRight = true;
+		facingLeft = false;
+		
+		right1 = new Sprite(new Texture(Gdx.files.internal("mobFrames/babyBlackLicoriceR1.png")));
+		right2 = new Sprite(new Texture(Gdx.files.internal("mobFrames/babyBlackLicoriceR2.png")));
+		
+		left1 = new Sprite(new Texture(Gdx.files.internal("mobFrames/babyBlackLicoriceL1.png")));
+		left2 = new Sprite(new Texture(Gdx.files.internal("mobFrames/babyBlackLicoriceL2.png")));
+		
+		adjustSprite(right1, right2, left1, left2);
+		
+		mobLeft = new Animation<Sprite>(); //left animation
+		mobRight = new Animation<Sprite>(); //right animation
+		
+		mobLeft.addFrame(left1, animationSpeed);
+		mobLeft.addFrame(left2, animationSpeed);
+		mobLeft.setLooping(true);
+		mobLeft.flip(false, true);
+		
+		mobRight.addFrame(right1, animationSpeed);
+		mobRight.addFrame(right2, animationSpeed);
+		mobRight.setLooping(true);
+		mobRight.flip(false, true);
+		
+		Gameplay.setFrameSizes(mobLeft, left1.getWidth() * 2, left1.getHeight() * 2);
+		Gameplay.setFrameSizes(mobRight, right1.getWidth() * 2, right1.getHeight() * 2);
+		
+		mobCurrent = mobRight;
+		
 		hitbox = new Circle(x, y, (int) RADIUS);
 		//TODO temporary values
 		velX = 0.5f;
@@ -80,8 +116,8 @@ public class Mob{
 	}
 
 	public void render(Graphics g){
-		if(mobSprite != null){
-			g.drawSprite(mobSprite, x, y);
+		if(mobCurrent != null){
+			mobCurrent.draw(g, x - left1.getWidth() / 2, y - left1.getHeight() / 2);
 		}
 		else{ //TODO Temporary shape placeholder
 			g.setColor(Color.DARK_GRAY);
@@ -114,6 +150,8 @@ public class Mob{
 		
 		checkProjectileCollision();
 		
+		updateSprite(delta);
+		
 		//When a mob dies
 		if(health <= 0){
 			//Until the mob is completely removed, move it far away
@@ -124,6 +162,25 @@ public class Mob{
 			level.mobs.remove(this);
 			TowerController.points += POINT_VALUE;
 		}
+	}
+	
+	public void updateSprite(float delta){
+		if(velX >= 0 || moveDirection == 'R'){
+			facingRight = true;
+			facingLeft = false;
+		}
+		else if(velX < 0 || moveDirection == 'L'){
+			facingRight = false;
+			facingLeft = true;
+		}
+		//change the direction the mob is facing
+		if(facingRight){
+			mobCurrent = mobRight;
+		}
+		else{
+			mobCurrent = mobLeft;
+		}
+		mobCurrent.update(delta);
 	}
 	
 	public void waypointPathingUpdate(){

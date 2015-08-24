@@ -46,9 +46,9 @@ public class ControllableMob implements InputProcessor{
 	public final float SHOT_RATE = 2; //Shots per second
 	public float shotTimer, maxShotTimer;
 
-	public final float damage = 25f; //How much damage this mob does to a tower
-	public float damageTimer;
-	public float maxDamageTimer = 1f;
+	//public final float damage = 25f; //How much damage this mob does to a tower
+	//public float damageTimer;
+	//public float maxDamageTimer = 1f;
 	
 	public final float drainAmount = 2f; //How much health is drained from other mobs
 	public float drainTimer;
@@ -60,6 +60,9 @@ public class ControllableMob implements InputProcessor{
 	public String type;
 	
 	public static Sound hurt = Gdx.audio.newSound(Gdx.files.internal("Hit_Hurt13.wav"));
+	public static Sound drainSound = Gdx.audio.newSound(Gdx.files.internal("DrainHealth4.wav"));
+	
+	public boolean drainSoundPlaying = false;
 
 	//Controls/key bindings
 	public final int LEFT = Keys.A;
@@ -109,6 +112,8 @@ public class ControllableMob implements InputProcessor{
 	}
 
 	public void update(float delta){
+		//TODO remove later
+		System.out.println(distanceTo(level.cursor));
 		accelX = 0;
 		accelY = 0;
 		playerMovement();
@@ -173,14 +178,19 @@ public class ControllableMob implements InputProcessor{
 	 * Drain the health of all mobs within range
 	 */
 	public void drainHealth(){
+		if(!drainSoundPlaying){
+			drainSoundPlaying = true;
+			drainSound.loop();
+		}
 		int amount = 0;
 		for(int i = 0; i < level.mobs.size(); i++){
 			//Can't drain if already at max health
 			if(health == maxHealth){
+				drainSound.stop();
 				return;
 			}
 			Mob temp = level.mobs.get(i);
-			System.out.println(distanceTo(temp.hitbox)); //TODO remove later
+			
 			if(distanceTo(temp.hitbox) <= DRAIN_RANGE){
 				//If the drain amount is more than the mob's remaining health
 				if(drainAmount >= temp.health){
@@ -345,6 +355,10 @@ public class ControllableMob implements InputProcessor{
 	public float distanceTo(Circle target){
 		return ((float)Math.pow(Math.pow((target.getY() - this.y), 2.0) + Math.pow((target.getX() - this.x), 2.0), 0.5));
 	}
+	
+	public float distanceTo(Rectangle target){
+		return ((float)Math.pow(Math.pow((target.y - this.y), 2.0) + Math.pow((target.x - this.x), 2.0), 0.5));
+	}
 
 	/*
 	 * Move horizontally in the direction of the x-velocity vector. If there is a collision in
@@ -413,6 +427,8 @@ public class ControllableMob implements InputProcessor{
 		}
 		if(keycode == Keys.SHIFT_LEFT){
 			isDraining = false;
+			drainSound.stop();
+			drainSoundPlaying = false;
 		}
 		return false;
 	}

@@ -5,7 +5,7 @@
  </tileset>
  <layer name="Tile Layer 1" width="40" height="30">
   <data encoding="base64" compression="zlib">
-   eJztlrsOwyAMRYmqvhuWDI2iLpH6/9/YVgqqe2WDMQwdPJwhwcCJbVCGEMJgZN6wzu/FUwE6S7S6WNbAOQ8F1lpxfiu8v7zZV3AV/Fu9pD47wPidIY2NTHxyrKnNDGtizAp+pwK7zPfU5JD6STnk/DB/9Blzxvn1OA8jiaFxt/DbW1hTdGr105xZGkd7Nu2NjiW/uGHJoTSPu8vo3pIfzTfC9btUS84rwnzqFjO1yzlZ/Kz9YO2tmvpqain1aUvv11KbZ66+C8Pn/RS+PYpnvcQxlO9biXNhbXRs8cS69qwN5tHiKN1xNGZSkHPEca2j5v9Am1erv+M4juM4/8ELjGwUVg==
+   eJztlrsOwjAMRVMQb5qlQxFiqcT/fyOt1ApzZTe204HBwxnaPDi9diKalFLj5DHjXb8VbwXoLFHr4tkD17wUeGvF+Q3w/jpyMHAT/Gu9pD47wnjPsIy1I3dmT4sf1qhl5gzkefq9c4H9yvdYMqR+Uobox+VHnzEzLr8tzkNL5tB5u/TbW1hT/AYuP+u5sMyjPbtkg46l/PKMJ0NpHXeX0WyoH31P80a4fpdqyXllWE/dspBNycnj5+0Hb29Z6quppdSnNWfTijXnzOT3ZJjed+nbo3jWS5xS+b6VuBT2RscaT6zrlrXBHD2O0h1H53QK1hxxXOuo+X+gzdXrHwRBEATBf/AB7jsUbg==
   </data>
  </layer>
  <objectgroup name="Solids" width="40" height="30" visible="0">
@@ -24,7 +24,7 @@
   <object x="32" y="480" width="512" height="32"/>
   <object x="0" y="416" width="32" height="96"/>
  </objectgroup>
- <objectgroup name="Waypoints" width="40" height="30">
+ <objectgroup name="Waypoints" width="40" height="30" visible="0">
   <object name="HOME" x="32" y="448" width="32" height="32"/>
   <object x="512" y="448" width="32" height="32"/>
   <object x="512" y="224" width="32" height="32"/>
