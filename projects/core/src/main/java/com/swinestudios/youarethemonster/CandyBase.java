@@ -14,12 +14,22 @@ public class CandyBase{
 	public float x, y;
 
 	public float health, maxHealth = 500; //TODO adjust later
-	
+
 	public final float healthBarMaxWidth = 64;
 	public final float healthBarHeight = 6;
 	public final float healthBarYOffset = -20;
+
+	public final int RADIUS = 32;
+	public final int SHOT_RADIUS = 80;
 	
-	public final int RADIUS = 32; 
+	public final float SHOT_MAGNITUDE = 4.0f; //How strong a tower shoots a projectile
+	public final float SHOT_LIFETIME = 0.2f; //How long a projectile lasts
+
+	public final float SHOT_RATE = 6; //Shots per second
+	public float shotTimer, maxShotTimer;
+	
+	public Mob nearestMob;
+	public ControllableMob nearestControllableMob;
 
 	public boolean isActive;
 
@@ -35,6 +45,9 @@ public class CandyBase{
 		this.level = level;
 		type = "CandyBase";
 		health = maxHealth;
+		shotTimer = 0;
+		maxShotTimer = 1f / SHOT_RATE;
+		nearestControllableMob = level.player;
 		//towerSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
 		//adjustSprite(baseSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
@@ -63,6 +76,26 @@ public class CandyBase{
 			checkProjectileCollision();
 			checkMobCollision();
 
+			//Tower can target auto mobs
+			findNearestMob();
+			//Only start shooting if nearest mob is in range
+			if(nearestMob != null && distanceTo(nearestMob.hitbox) <= SHOT_RADIUS){ 
+				shotTimer += delta;
+				if(shotTimer > maxShotTimer){
+					shootNearestMob();
+					shotTimer = 0;
+				}
+			}
+			//Tower can target controllable mobs
+			//Only start shooting if controllable mob is in range
+			if(nearestControllableMob != null && distanceTo(nearestControllableMob.hitbox2) <= SHOT_RADIUS){ 
+				shotTimer += delta;
+				if(shotTimer > maxShotTimer){
+					shootControllableMob();
+					shotTimer = 0;
+				}
+			}
+
 			//If the base is destroyed, win the game
 			if(health <= 0){
 				isActive = false;
@@ -75,6 +108,47 @@ public class CandyBase{
 		}
 	}
 	
+	public void findNearestMob(){
+		for(int i = 0; i < level.mobs.size(); i++){
+			Mob temp = level.mobs.get(i);
+			if(distanceTo(temp.hitbox) <= SHOT_RADIUS){ //If a mob is within range
+				if(nearestMob == null){ //The first mob that becomes the nearest mob
+					nearestMob = temp;
+					continue;
+				}
+				if(distanceTo(temp.hitbox) < distanceTo(nearestMob.hitbox)){ //If this mob is the new closest mob
+					nearestMob = temp;
+				}
+			}
+		}
+	}
+	
+	public void shootNearestMob(){
+		float targetX = nearestMob.x;
+		float targetY = nearestMob.y;
+		float deltaX = targetX - this.x;
+		float deltaY = targetY - this.y;
+		float theta = (float) Math.atan2(deltaY, deltaX); 
+
+		float vectorX = (float) Math.cos(theta) * SHOT_MAGNITUDE;
+		float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;
+		Projectile p = new Projectile(x, y, vectorX, vectorY, SHOT_LIFETIME, level);
+		level.projectiles.add(p);
+	}
+
+	public void shootControllableMob(){
+		float targetX = nearestControllableMob.hitbox2.getX();
+		float targetY = nearestControllableMob.hitbox2.getY();
+		float deltaX = targetX - this.x;
+		float deltaY = targetY - this.y;
+		float theta = (float) Math.atan2(deltaY, deltaX); 
+
+		float vectorX = (float) Math.cos(theta) * SHOT_MAGNITUDE;
+		float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;
+		Projectile p = new Projectile(x, y, vectorX, vectorY, SHOT_LIFETIME, level);
+		level.projectiles.add(p);
+	}
+
 	/*
 	 * Check for projectiles from any mobs
 	 */
@@ -91,7 +165,7 @@ public class CandyBase{
 			}
 		}
 	}
-	
+
 	/*
 	 * Check for collision from any mobs
 	 */
