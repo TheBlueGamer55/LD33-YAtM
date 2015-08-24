@@ -199,6 +199,10 @@ public class ControllableMob implements InputProcessor{
 					amount += drainAmount;
 				}
 				temp.health -= drainAmount;
+				if(!temp.isScreaming){
+					temp.isScreaming = true;
+					temp.playScreamSound();
+				}
 				//Make sure we only heal up to maxHealth
 				if(health + amount > maxHealth){
 					health = maxHealth;

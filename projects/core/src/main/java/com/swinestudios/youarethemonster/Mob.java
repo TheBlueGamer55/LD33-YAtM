@@ -1,5 +1,7 @@
 package com.swinestudios.youarethemonster;
 
+import java.util.Random;
+
 import org.mini2Dx.core.geom.Circle;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Animation;
@@ -7,6 +9,7 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -14,6 +17,8 @@ public class Mob{
 	
 	public static int mobcount = 0;
 	public int id;
+	
+	public Random random = new Random();
 
 	public float x, y, velX, velY;
 	public float damage = 50; //How much damage a mob does if it kills itself when attacking the candy base
@@ -41,6 +46,9 @@ public class Mob{
 	public float shotTimer, maxShotTimer;
 	public boolean isShooting = false;
 	
+	public boolean isScreaming = false;
+	public float screamTimer, maxScreamTimer = 1f;
+	
 	public Tower nearestTower;
 	
 	float moveSpeed;//The speed at which this mob moves in the UDLR directions
@@ -49,6 +57,11 @@ public class Mob{
 	public Waypoint target;//Where this is aiming to go
 	
 	public boolean isActive;
+	
+	public static Sound scream1 = Gdx.audio.newSound(Gdx.files.internal("scream1.wav"));
+	public static Sound scream2 = Gdx.audio.newSound(Gdx.files.internal("scream2.wav"));
+	public static Sound scream3 = Gdx.audio.newSound(Gdx.files.internal("scream3.wav"));
+	public static Sound scream4 = Gdx.audio.newSound(Gdx.files.internal("scream4.wav"));
 
 	public Circle hitbox;
 	public Gameplay level;
@@ -61,6 +74,7 @@ public class Mob{
 		this.level = level;
 		type = "Mob";
 		health = maxHealth;
+		screamTimer = 0;
 		shotTimer = 0;
 		maxShotTimer = 1f / SHOT_RATE;
 		
@@ -152,6 +166,14 @@ public class Mob{
 		
 		updateSprite(delta);
 		
+		if(isScreaming){
+			screamTimer += delta;
+			if(screamTimer > maxScreamTimer){
+				screamTimer = 0;
+				isScreaming = false;
+			}
+		}
+		
 		//When a mob dies
 		if(health <= 0){
 			//Until the mob is completely removed, move it far away
@@ -159,8 +181,26 @@ public class Mob{
 			y = -100;
 			hitbox.setX(-100);
 			hitbox.setY(-100);
+			playScreamSound();
+			
 			level.mobs.remove(this);
 			TowerController.points += POINT_VALUE;
+		}
+	}
+	
+	public void playScreamSound(){
+		int choice = random.nextInt(4);
+		if(choice == 0){
+			scream1.play();
+		}
+		else if(choice == 1){
+			scream2.play();
+		}
+		else if(choice == 2){
+			scream3.play();
+		}
+		else if(choice == 3){
+			scream4.play();
 		}
 	}
 	

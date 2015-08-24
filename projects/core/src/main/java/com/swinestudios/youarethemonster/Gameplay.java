@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mini2Dx.core.game.GameContainer;
+import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Animation;
 import org.mini2Dx.core.graphics.Graphics;
@@ -131,6 +132,7 @@ public class Gameplay implements GameScreen{
 		if(map != null){
 			generateSolids(map);
 			generateWaypoints(map);
+			//TODO generateTowerSpawns(map);
 		}
 
 		//TODO temporary code for testing
@@ -390,20 +392,31 @@ public class Gameplay implements GameScreen{
 				}
 			}
 		}
-
 		startWaypointPairing();
-
+	}
+	
+	public void generateTowerSpawns(TiledMap map){
+		List<TiledObject> objects = map.getObjectGroup("Spawnpoints").getObjects();
+		if(objects != null){ //if the given object layer exists
+			for(int i = 0; i < objects.size(); i++){
+				TiledObject temp = objects.get(i);
+				Point point = new Point(temp.getX() + temp.getWidth() / 2, temp.getY() + temp.getHeight() / 2);
+				if(towerController.spawnPoints != null){
+					towerController.spawnPoints.add(point);
+				}
+				else{
+					System.out.println("ArrayList solids does not exist."); //error message
+				}
+			}
+		}
 	}
 
 	public void startWaypointPairing(){
-
 		for(int i = 0; i < waypoints.size(); i++){
-
 			if(waypoints.get(i).isHome){
 				waypoints.get(i).findChildren(waypoints, 'x');//The x call means search all directions
 			}
 		}
-
 	}
 	
 	/*
