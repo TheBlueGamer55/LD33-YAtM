@@ -56,6 +56,8 @@ public class Gameplay implements GameScreen{
 	public Rectangle cursor; //For use with UI
 	public Rectangle mobSpawnButton;
 	public Rectangle newWaveButton;
+	
+	public static Sound spawnSound = Gdx.audio.newSound(Gdx.files.internal("SpawnMobDarker.wav"));
 
 	//Make sure that there are no accidental double-clicks
 	public boolean hasClicked = false;
@@ -246,6 +248,7 @@ public class Gameplay implements GameScreen{
 					if(cursor.overlaps(mobSpawnButton)){
 						if(mobCount > 0){
 							mobs.add(new Mob(home.x, home.y, this, true));
+							spawnSound.play();
 							//Costs points to spawn a mob
 							mobCount--;
 						}

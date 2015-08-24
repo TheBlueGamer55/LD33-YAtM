@@ -7,6 +7,7 @@ import org.mini2Dx.core.graphics.Graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -57,6 +58,8 @@ public class ControllableMob implements InputProcessor{
 	public Circle hitbox2; //Used by towers to detect controllable mobs
 	public Gameplay level;
 	public String type;
+	
+	public static Sound hurt = Gdx.audio.newSound(Gdx.files.internal("Hit_Hurt13.wav"));
 
 	//Controls/key bindings
 	public final int LEFT = Keys.A;
@@ -206,10 +209,15 @@ public class ControllableMob implements InputProcessor{
 			if(temp != null && temp.isActive){
 				if(distanceTo(temp.hitbox) <= RADIUS * 2){ //If there is a collision
 					level.projectiles.remove(temp);
-					health -= temp.damage;
+					dealDamage(temp.damage);
 				}
 			}
 		}
+	}
+	
+	public void dealDamage(float amount){
+		health -= amount;
+		hurt.play();
 	}
 
 	public void playerMovement(){

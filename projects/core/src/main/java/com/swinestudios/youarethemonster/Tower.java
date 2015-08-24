@@ -7,6 +7,7 @@ import org.mini2Dx.core.graphics.Sprite;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 
 public class Tower{
@@ -36,6 +37,8 @@ public class Tower{
 	public Gameplay level;
 	public String type;
 	public Sprite towerSprite;
+	
+	public static Sound shotSound = Gdx.audio.newSound(Gdx.files.internal("LessExplosiveLaunch.wav"));
 
 	public Mob nearestMob;
 	public ControllableMob nearestControllableMob;
@@ -174,6 +177,7 @@ public class Tower{
 		float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;
 		Projectile p = new Projectile(x, y, vectorX, vectorY, SHOT_LIFETIME, level);
 		level.projectiles.add(p);
+		shotSound.play(1, 1.5f, 0);
 	}
 
 	public void shootControllableMob(){
@@ -187,6 +191,7 @@ public class Tower{
 		float vectorY = (float) Math.sin(theta) * SHOT_MAGNITUDE;
 		Projectile p = new Projectile(x, y, vectorX, vectorY, SHOT_LIFETIME, level);
 		level.projectiles.add(p);
+		shotSound.play(1, 1.8f, 0);
 	}
 
 	public void setAutoMobsOnly(boolean flag){
