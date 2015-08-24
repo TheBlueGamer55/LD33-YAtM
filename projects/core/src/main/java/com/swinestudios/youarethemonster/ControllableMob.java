@@ -45,6 +45,9 @@ public class ControllableMob implements InputProcessor{
 
 	public final float SHOT_RATE = 2; //Shots per second
 	public float shotTimer, maxShotTimer;
+	
+	public boolean attackSoundPlaying = false;
+	public float attackSoundTimer, maxAttackSoundTimer = 6f;
 
 	//public final float damage = 25f; //How much damage this mob does to a tower
 	//public float damageTimer;
@@ -61,6 +64,7 @@ public class ControllableMob implements InputProcessor{
 	
 	public static Sound hurt = Gdx.audio.newSound(Gdx.files.internal("Hit_Hurt13.wav"));
 	public static Sound drainSound = Gdx.audio.newSound(Gdx.files.internal("DrainHealth4.wav"));
+	public static Sound attackSound = Gdx.audio.newSound(Gdx.files.internal("tentacleAttack.wav"));
 	
 	public boolean drainSoundPlaying = false;
 
@@ -84,6 +88,7 @@ public class ControllableMob implements InputProcessor{
 		health = maxHealth;
 		shotTimer = 0;
 		drainTimer = 0;
+		attackSoundTimer = 0;
 		maxShotTimer = 1f / SHOT_RATE;
 		type = "ControllableMob";		
 		hitbox = new Rectangle(x, y, 32, 32); //TODO adjust size later based on sprite
@@ -151,6 +156,14 @@ public class ControllableMob implements InputProcessor{
 				drainTimer = 0;
 			}
 		}
+		
+		if(attackSoundPlaying){
+			attackSoundTimer += delta;
+			if(attackSoundTimer > maxAttackSoundTimer){
+				attackSoundTimer = 0;
+				attackSoundPlaying = false;
+			}
+		}
 
 		//If the controllable mob dies, game over
 		if(health <= 0){
@@ -163,6 +176,9 @@ public class ControllableMob implements InputProcessor{
 	 * Attack by shooting projectiles in 8 surrounding directions
 	 */
 	public void attack(){
+		if(!attackSoundPlaying){
+			attackSound.play();
+		}
 		for(int i = 0; i < 12; i++){
 			double theta = Math.PI / 6f * i;
 			float vectorX = (float) Math.cos(theta) * SHOT_MAGNITUDE;
@@ -426,6 +442,9 @@ public class ControllableMob implements InputProcessor{
 	public boolean keyUp(int keycode) {
 		if(keycode == Keys.SPACE){
 			isAttacking = false;
+			attackSoundPlaying = false;
+			attackSoundTimer = 0;
+			attackSound.stop();
 		}
 		if(keycode == Keys.SHIFT_LEFT){
 			isDraining = false;

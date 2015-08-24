@@ -190,7 +190,7 @@ public class CandyBase{
 	
 	public void dealDamage(float amount){
 		health -= amount;
-		Tower.towerHit.play();
+		//Tower.towerHit.play();
 	}
 
 	/*

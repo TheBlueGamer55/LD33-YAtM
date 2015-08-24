@@ -288,6 +288,8 @@ public class Gameplay implements GameScreen{
 			}
 			else if(paused){
 				if(Gdx.input.isKeyJustPressed(Keys.Y)){
+					Tower.constructionSound.stop();
+					MainMenu.select.play();
 					sm.enterGameScreen(MainMenu.ID, new FadeOutTransition(), new FadeInTransition());
 				}
 				if(Gdx.input.isKeyJustPressed(Keys.N)){

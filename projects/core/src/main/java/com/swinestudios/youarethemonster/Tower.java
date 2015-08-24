@@ -45,7 +45,7 @@ public class Tower{
 	public Random random = new Random();
 	
 	public static Sound shotSound = Gdx.audio.newSound(Gdx.files.internal("LessExplosiveLaunch.wav"));
-	public static Sound towerHit = Gdx.audio.newSound(Gdx.files.internal("TowerHit.wav"));
+	//public static Sound towerHit = Gdx.audio.newSound(Gdx.files.internal("TowerHit.wav"));
 	public static Sound destroyedSound = Gdx.audio.newSound(Gdx.files.internal("TowerDestroyed.wav"));
 	public static Sound constructionSound = Gdx.audio.newSound(Gdx.files.internal("TowerConstruction2.wav"));
 	public static Sound builtSound = Gdx.audio.newSound(Gdx.files.internal("TowerBuilt.wav"));
@@ -212,7 +212,7 @@ public class Tower{
 	
 	public void dealDamage(float amount){
 		health -= amount;
-		towerHit.play();
+		//towerHit.play();
 	}
 
 	public void setAutoMobsOnly(boolean flag){
