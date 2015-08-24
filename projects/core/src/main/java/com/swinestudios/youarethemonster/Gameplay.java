@@ -37,10 +37,25 @@ public class Gameplay implements GameScreen{
 	public ControllableMob player;
 
 	public boolean gameOver = false;
+	public boolean gameWin = false;
 	public boolean paused = false;
+
+	//TODO adjust later
+	//The "supplies" that the player has each wave
+	public final int initialMobCount = 20; //How many mobs can spawn per wave
+	public int mobCount = initialMobCount;
+
+	public int waveNum; //If a new wave starts, the player's supplies (points) reset, allowing for more mobs to spawn
+	public boolean startingNewWave = false;
+	public float waveTimer, maxWaveTimer = 3f; //Brief cooldown between waves
 
 	public Rectangle cursor; //For use with UI
 	public Rectangle mobSpawnButton;
+	public Rectangle newWaveButton;
+
+	//Make sure that there are no accidental double-clicks
+	public boolean hasClicked = false;
+	public float mouseCooldown, maxMouseCooldown = 0.1f;
 
 	public Mob mob1, mob2, mob3;
 
@@ -66,6 +81,7 @@ public class Gameplay implements GameScreen{
 		cursor = new Rectangle(Gdx.input.getX(), Gdx.input.getY(), 1, 1);
 		//TODO change width and height based on button sprite
 		mobSpawnButton = new Rectangle(Gdx.graphics.getWidth() - 60, Gdx.graphics.getHeight() - 60, 50, 32);
+		newWaveButton = new Rectangle(60, Gdx.graphics.getHeight() - 60, 50, 32);
 	}
 
 	@Override
@@ -77,12 +93,22 @@ public class Gameplay implements GameScreen{
 	public void postTransitionOut(Transition t){
 		gameOver = false;
 		paused = false;
+		gameWin = false;
+		startingNewWave = false;
 	}
 
 	@Override
 	public void preTransitionIn(Transition t){
 		gameOver = false;
 		paused = false;
+		gameWin = false;
+		startingNewWave = false;
+
+		waveNum = 1;
+		mobCount = initialMobCount;
+
+		mouseCooldown = 0;
+
 		towerController = new TowerController(this);
 		TowerController.points = INITIAL_POINTS;
 		mobs = new ArrayList<Mob>();
@@ -151,11 +177,18 @@ public class Gameplay implements GameScreen{
 		}
 
 		//TODO - UI graphics using sprites
+		g.drawString("Wave Number: " + waveNum, camX + 4,  camY + 4);
+
 		g.drawRect(camX + mobSpawnButton.x, camY + mobSpawnButton.y, mobSpawnButton.width, mobSpawnButton.height);
 		g.drawString("Spawn", camX + mobSpawnButton.x, camY + mobSpawnButton.y);
-		g.drawString("mob", camX + mobSpawnButton.x, camY + mobSpawnButton.y + 12);
+		g.drawString("mob", camX + mobSpawnButton.x, camY + mobSpawnButton.y + 14);
 
-		//TODO adjust pause menu and game over UI
+		g.drawRect(camX + newWaveButton.x, camY + newWaveButton.y, newWaveButton.width, newWaveButton.height);
+		g.drawString("New", camX + newWaveButton.x, camY + newWaveButton.y);
+		g.drawString("Wave", camX + newWaveButton.x, camY + newWaveButton.y + 14);
+		g.drawString("Mob amount left: " + mobCount, camX + newWaveButton.x, camY + newWaveButton.y - 14);
+
+		//TODO adjust UI for each menu
 		if(gameOver){
 			g.setColor(Color.WHITE);
 			g.drawString("You died! Press Escape to go back to the main menu", camX + 160, camY + 240);
@@ -164,12 +197,20 @@ public class Gameplay implements GameScreen{
 			g.setColor(Color.WHITE);
 			g.drawString("Are you sure you want to quit? Y or N", camX + 220, camY + 240);
 		}
+		if(gameWin){
+			g.setColor(Color.WHITE);
+			g.drawString("Congratulations! It took you " + waveNum + " waves to destroy the land!", camX + 200, camY + 240);
+		}
+		if(startingNewWave){
+			g.setColor(Color.WHITE);
+			g.drawString("Starting new wave in " + (maxWaveTimer - waveTimer), camX + 220, camY + 240);
+		}
 	}
 
 	@Override
 	public void update(GameContainer gc, ScreenManager<? extends GameScreen> sm, float delta){
 		//The main game's logic
-		if(!paused && !gameOver){
+		if(!paused && !gameOver && !gameWin){
 			cursor.setX(Gdx.input.getX());
 			cursor.setY(Gdx.input.getY());
 
@@ -181,7 +222,6 @@ public class Gameplay implements GameScreen{
 			updateTowers(delta);
 			updateProjectiles(delta);
 			updateMobProjectiles(delta);
-			//TODO temporary code - remove later
 			towerController.update(delta);
 
 			if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){
@@ -190,10 +230,35 @@ public class Gameplay implements GameScreen{
 
 			//UI controls
 			if(Gdx.input.justTouched()){
-				//TODO Spawn a mob
-				if(cursor.overlaps(mobSpawnButton)){
-					mobs.add(new Mob(home.x, home.y, this, true));
-					//Costs points to spawn a mob
+				if(!hasClicked){ //Prevent double-clicks
+					hasClicked = true;
+					//Spawn a mob
+					if(cursor.overlaps(mobSpawnButton)){
+						if(mobCount > 0){
+							mobs.add(new Mob(home.x, home.y, this, true));
+							//Costs points to spawn a mob
+							mobCount--;
+						}
+					}
+					if(cursor.overlaps(newWaveButton)){
+						startingNewWave = true;
+					}
+				}
+			}
+			if(hasClicked){ //Prevent double-clicks
+				mouseCooldown += delta;
+				if(mouseCooldown > maxMouseCooldown){
+					mouseCooldown = 0;
+					hasClicked = false;
+				}
+			}
+			
+			if(startingNewWave){
+				waveTimer += delta;
+				if(waveTimer > maxWaveTimer){
+					waveTimer = 0;
+					startingNewWave = false;
+					startNewWave();
 				}
 			}
 		}
@@ -212,7 +277,20 @@ public class Gameplay implements GameScreen{
 					paused = false;
 				}
 			}
+			else if(gameWin){
+				if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){
+					sm.enterGameScreen(MainMenu.ID, new FadeOutTransition(), new FadeInTransition());
+				}
+			}
 		}
+	}
+
+	/*
+	 * TODO Starts a new wave of monsters (player's supplies reset)
+	 */
+	public void startNewWave(){
+		waveNum++;
+		mobCount = initialMobCount;
 	}
 
 	public void renderTowers(Graphics g){
