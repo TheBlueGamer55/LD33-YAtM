@@ -15,6 +15,7 @@ public class DesktopLauncher{
 		config.resizable = false;
         config.foregroundFPS = 60;
         config.backgroundFPS = 60;
+        config.title = "Black Licorice II - Return of the Salt";
 		new LwjglApplication(new DesktopMini2DxGame(YouAreMonster.GAME_IDENTIFIER, new YouAreMonster()), config);
 	}
 }

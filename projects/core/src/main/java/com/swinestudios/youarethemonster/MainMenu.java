@@ -2,6 +2,7 @@ package com.swinestudios.youarethemonster;
 
 import org.mini2Dx.core.game.GameContainer;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.graphics.Sprite;
 import org.mini2Dx.core.screen.GameScreen;
 import org.mini2Dx.core.screen.ScreenManager;
 import org.mini2Dx.core.screen.Transition;
@@ -11,15 +12,19 @@ import org.mini2Dx.core.screen.transition.FadeOutTransition;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
 
 public class MainMenu implements GameScreen{
 	
 	public static int ID = 1;
 	
-	public static Sound menuTheme, select;
+	public static Sound menuTheme, select, violin;
 	
 	public boolean isSelected;
-	public float selectTimer, maxSelectTimer = 1.0f;
+	public boolean showFace = false;
+	public float selectTimer, maxSelectTimer = 2.0f;
+	
+	public Sprite background, face;
 	
 	@Override
 	public int getId(){
@@ -30,6 +35,11 @@ public class MainMenu implements GameScreen{
 	public void initialise(GameContainer gc){
 		menuTheme = Gdx.audio.newSound(Gdx.files.internal("menuTheme.ogg"));
 		select = Gdx.audio.newSound(Gdx.files.internal("Select.wav"));
+		violin = Gdx.audio.newSound(Gdx.files.internal("violin.wav"));
+		background = new Sprite(new Texture(Gdx.files.internal("mainMenuBG.png")));
+		background.setSize(640, 480);
+		face = new Sprite(new Texture(Gdx.files.internal("blackLicoriceFace.png")));
+		face.setSize(640, 480);
 	}
 
 	@Override
@@ -41,6 +51,7 @@ public class MainMenu implements GameScreen{
 	public void postTransitionOut(Transition t){
 		menuTheme.stop();
 		isSelected = false;
+		showFace = false;
 		selectTimer = 0;
 	}
 
@@ -57,7 +68,10 @@ public class MainMenu implements GameScreen{
 
 	@Override
 	public void render(GameContainer gc, Graphics g){
-		g.drawString("This is the main menu", 320, 240);
+		g.drawSprite(background, 0, 0);
+		if(showFace){
+			g.drawSprite(face, 0, 0);
+		}
 	}
 
 	@Override
@@ -65,7 +79,10 @@ public class MainMenu implements GameScreen{
 		if(Gdx.input.isKeyJustPressed(Keys.ENTER)){
 			if(!isSelected){
 				isSelected = true;
-				select.play();
+				showFace = true;
+				menuTheme.stop();
+				//select.play();
+				violin.play();
 			}
 		}
 		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){

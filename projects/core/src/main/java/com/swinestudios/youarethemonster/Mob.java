@@ -21,7 +21,7 @@ public class Mob{
 	public Random random = new Random();
 
 	public float x, y, velX, velY;
-	public float damage = 50; //How much damage a mob does if it kills itself when attacking the candy base
+	public float damage = 25; //How much damage a mob does if it kills itself when attacking the candy base
 	public float health, maxHealth = 30; //TODO adjust later
 	
 	public final float healthBarMaxWidth = 20;
@@ -36,7 +36,7 @@ public class Mob{
 	
 	public char moveDirection;
 	public final int RADIUS = 8; //TODO should this be final?
-	public final int POINT_VALUE = 10; //TODO adjust later, how many points the hero player gets if a mob dies
+	public final int POINT_VALUE = 5; //TODO adjust later, how many points the hero player gets if a mob dies
 	
 	public final float SHOT_MAGNITUDE = 4.0f; //How strong a mob shoots a projectile
 	public final float SHOT_LIFETIME = 0.2f; //How long a projectile lasts
@@ -108,7 +108,7 @@ public class Mob{
 		mobCurrent = mobRight;
 		
 		hitbox = new Circle(x, y, (int) RADIUS);
-		//TODO temporary values
+		//temporary values
 		velX = 0.5f;
 		velY = 0.5f;
 		id = ++mobcount;
@@ -133,7 +133,7 @@ public class Mob{
 		if(mobCurrent != null){
 			mobCurrent.draw(g, x - left1.getWidth() / 2, y - left1.getHeight() / 2);
 		}
-		else{ //TODO Temporary shape placeholder
+		else{ //Temporary shape placeholder
 			g.setColor(Color.DARK_GRAY);
 			g.fillCircle(x, y, RADIUS);
 		}
@@ -146,9 +146,9 @@ public class Mob{
 	
 	
 	public void update(float delta){
-		//TODO what happens while a mob is shooting?
+		//what happens while a mob is shooting?
 		if(isShooting){
-			//TODO shoot tower
+			//shoot tower
 		}
 		//Move along the waypoints
 		else{

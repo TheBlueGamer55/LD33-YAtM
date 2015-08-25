@@ -2,14 +2,16 @@ package com.swinestudios.youarethemonster;
 
 import org.mini2Dx.core.geom.Circle;
 import org.mini2Dx.core.geom.Rectangle;
+import org.mini2Dx.core.graphics.Animation;
 import org.mini2Dx.core.graphics.Graphics;
+import org.mini2Dx.core.graphics.Sprite;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.Texture;
 
 public class ControllableMob implements InputProcessor{ 
 
@@ -35,7 +37,15 @@ public class ControllableMob implements InputProcessor{
 
 	public final float healthBarMaxWidth = 36;
 	public final float healthBarHeight = 6;
-	public final float healthBarYOffset = -16;
+	public final float healthBarYOffset = -20;
+
+	public boolean facingRight, facingLeft;
+
+	public Sprite left1, left2, right1, right2;
+	public Animation<Sprite> mobLeft, mobRight, mobCurrent;
+	public Sprite tentacles1, tentacles2, tentacles3;
+	public Animation<Sprite> tentacles;
+	public float animationSpeed = 0.1f; //How many seconds a frame lasts
 
 	public final int RADIUS = 16; 
 	public final int DRAIN_RANGE = 128;
@@ -45,14 +55,14 @@ public class ControllableMob implements InputProcessor{
 
 	public final float SHOT_RATE = 2; //Shots per second
 	public float shotTimer, maxShotTimer;
-	
+
 	public boolean attackSoundPlaying = false;
 	public float attackSoundTimer, maxAttackSoundTimer = 6f;
 
 	//public final float damage = 25f; //How much damage this mob does to a tower
 	//public float damageTimer;
 	//public float maxDamageTimer = 1f;
-	
+
 	public final float drainAmount = 2f; //How much health is drained from other mobs
 	public float drainTimer;
 	public float maxDrainTimer = 0.1f;
@@ -61,11 +71,11 @@ public class ControllableMob implements InputProcessor{
 	public Circle hitbox2; //Used by towers to detect controllable mobs
 	public Gameplay level;
 	public String type;
-	
+
 	public static Sound hurt = Gdx.audio.newSound(Gdx.files.internal("Hit_Hurt13.wav"));
 	public static Sound drainSound = Gdx.audio.newSound(Gdx.files.internal("DrainHealth4.wav"));
 	public static Sound attackSound = Gdx.audio.newSound(Gdx.files.internal("tentacleAttack.wav"));
-	
+
 	public boolean drainSoundPlaying = false;
 
 	//Controls/key bindings
@@ -90,25 +100,71 @@ public class ControllableMob implements InputProcessor{
 		drainTimer = 0;
 		attackSoundTimer = 0;
 		maxShotTimer = 1f / SHOT_RATE;
-		type = "ControllableMob";		
-		hitbox = new Rectangle(x, y, 32, 32); //TODO adjust size later based on sprite
+		type = "ControllableMob";
+		
+		facingRight = true;
+		facingLeft = false;
+		
+		right1 = new Sprite(new Texture(Gdx.files.internal("mobFrames/babyBlackLicoriceR1.png")));
+		right2 = new Sprite(new Texture(Gdx.files.internal("mobFrames/babyBlackLicoriceR2.png")));
+		
+		left1 = new Sprite(new Texture(Gdx.files.internal("mobFrames/babyBlackLicoriceL1.png")));
+		left2 = new Sprite(new Texture(Gdx.files.internal("mobFrames/babyBlackLicoriceL2.png")));
+		
+		tentacles1 = new Sprite(new Texture(Gdx.files.internal("tentacles1.png")));
+		tentacles2 = new Sprite(new Texture(Gdx.files.internal("tentacles2.png")));
+		tentacles3 = new Sprite(new Texture(Gdx.files.internal("tentacles3.png")));
+		
+		adjustSprite(right1, right2, left1, left2, tentacles1, tentacles2, tentacles3);
+		
+		mobLeft = new Animation<Sprite>(); //left animation
+		mobRight = new Animation<Sprite>(); //right animation
+		tentacles = new Animation<Sprite>();
+		
+		mobLeft.addFrame(left1, animationSpeed);
+		mobLeft.addFrame(left2, animationSpeed);
+		mobLeft.setLooping(true);
+		mobLeft.flip(false, true);
+		
+		mobRight.addFrame(right1, animationSpeed);
+		mobRight.addFrame(right2, animationSpeed);
+		mobRight.setLooping(true);
+		mobRight.flip(false, true);
+		
+		tentacles.addFrame(tentacles1, animationSpeed);
+		tentacles.addFrame(tentacles2, animationSpeed);
+		tentacles.addFrame(tentacles3, animationSpeed);
+		tentacles.setLooping(true);
+		tentacles.flip(false, true);
+		
+		Gameplay.setFrameSizes(mobLeft, left1.getWidth() * 4, left1.getHeight() * 4);
+		Gameplay.setFrameSizes(mobRight, right1.getWidth() * 4, right1.getHeight() * 4);
+		Gameplay.setFrameSizes(tentacles, tentacles1.getWidth() * 2, tentacles1.getHeight() * 2);
+		
+		mobCurrent = mobRight;
+		
+		hitbox = new Rectangle(x, y, left1.getWidth(), left1.getHeight() - 4); //adjust size later based on sprite
 		hitbox2 = new Circle(x, y, RADIUS);
 	}
 
 	public void render(Graphics g){
-		g.setColor(Color.BLUE);
-		g.fillRect(x, y, hitbox.width, hitbox.height);
+		//Debug - remove later
+		//g.drawRect(x, y, hitbox.width, hitbox.height);
 		if(isAttacking){
-			//TODO if attacking, draw attack animation
+			tentacles.draw(g, x - tentacles1.getWidth() / 2 + 8, y - tentacles1.getHeight() / 2 + 10);
 		}
-		else{
+		if(mobCurrent != null){
+			mobCurrent.draw(g, x, y);
+		}
+		/*else{
 			if(velX != 0 || velY != 0){ 
-				//TODO if moving, draw animated sprites
+				//if moving, draw animated sprites
 			}
 			else{ 
-				//TODO //draw still images if not moving with appropriate direction
+				//draw still images if not moving with appropriate direction
 			}
-		}
+		}*/
+		
 		//Draw health bar
 		g.setColor(Color.RED);
 		g.fillRect(hitbox2.getX() - healthBarMaxWidth / 2, hitbox2.getY() + healthBarYOffset, healthBarMaxWidth, healthBarHeight);
@@ -120,6 +176,7 @@ public class ControllableMob implements InputProcessor{
 		accelX = 0;
 		accelY = 0;
 		playerMovement();
+		tentacles.update(delta);
 
 		//Apply friction when not moving or when exceeding the max horizontal speed
 		if(Math.abs(velX) > maxSpeedX || !Gdx.input.isKeyPressed(this.LEFT) && !Gdx.input.isKeyPressed(this.RIGHT)){
@@ -141,6 +198,8 @@ public class ControllableMob implements InputProcessor{
 		hitbox2.setY(this.y + hitbox.getHeight() / 2);
 
 		checkProjectileCollision();
+		
+		updateSprite(delta);
 
 		if(isAttacking){
 			shotTimer += delta;
@@ -156,7 +215,7 @@ public class ControllableMob implements InputProcessor{
 				drainTimer = 0;
 			}
 		}
-		
+
 		if(attackSoundPlaying){
 			attackSoundTimer += delta;
 			if(attackSoundTimer > maxAttackSoundTimer){
@@ -167,9 +226,27 @@ public class ControllableMob implements InputProcessor{
 
 		//If the controllable mob dies, game over
 		if(health <= 0){
-			//TODO game over
 			level.gameOver = true;
 		}
+	}
+	
+	public void updateSprite(float delta){
+		if(velX > 0){
+			facingRight = true;
+			facingLeft = false;
+		}
+		else if(velX < 0){
+			facingRight = false;
+			facingLeft = true;
+		}
+		//change the direction the mob is facing
+		if(facingRight){
+			mobCurrent = mobRight;
+		}
+		else{
+			mobCurrent = mobLeft;
+		}
+		mobCurrent.update(delta);
 	}
 
 	/*
@@ -187,7 +264,7 @@ public class ControllableMob implements InputProcessor{
 			level.mobProjectiles.add(p);
 		}
 	}
-	
+
 	/*
 	 * Drain the health of all mobs within range
 	 */
@@ -204,7 +281,7 @@ public class ControllableMob implements InputProcessor{
 				return;
 			}
 			Mob temp = level.mobs.get(i);
-			
+
 			if(distanceTo(temp.hitbox) <= DRAIN_RANGE){
 				//If the drain amount is more than the mob's remaining health
 				if(drainAmount >= temp.health){
@@ -226,7 +303,6 @@ public class ControllableMob implements InputProcessor{
 				else{
 					health += amount;
 				}
-				//TODO play screaming sound effect when mobs are being drained
 			}
 		}
 	}
@@ -242,7 +318,7 @@ public class ControllableMob implements InputProcessor{
 			}
 		}
 	}
-	
+
 	public void dealDamage(float amount){
 		health -= amount;
 		hurt.play();
@@ -373,7 +449,7 @@ public class ControllableMob implements InputProcessor{
 	public float distanceTo(Circle target){
 		return ((float)Math.pow(Math.pow((target.getY() - this.y), 2.0) + Math.pow((target.getX() - this.x), 2.0), 0.5));
 	}
-	
+
 	public float distanceTo(Rectangle target){
 		return ((float)Math.pow(Math.pow((target.y - this.y), 2.0) + Math.pow((target.x - this.x), 2.0), 0.5));
 	}
@@ -450,6 +526,14 @@ public class ControllableMob implements InputProcessor{
 			isDraining = false;
 			drainSound.stop();
 			drainSoundPlaying = false;
+		}
+		if(keycode == LEFT){
+			this.facingLeft = true;
+			this.facingRight = false;
+		}
+		if(keycode == RIGHT){
+			this.facingRight = true;
+			this.facingLeft = false;
 		}
 		return false;
 	}

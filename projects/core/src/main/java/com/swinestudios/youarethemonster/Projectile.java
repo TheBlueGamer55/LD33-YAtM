@@ -5,10 +5,12 @@ import org.mini2Dx.core.geom.Rectangle;
 import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class Projectile{
 
 	public float x, y, velX, velY;
-	public float damage = 10; //How much damage this projectile does to a mob
+	public float damage = 5; //How much damage this projectile does to a mob
 	public float lifeTimer = 0, maxLifeTimer; //For how long does this projectile last
 	public final int RADIUS = 2; 
 
@@ -38,8 +40,9 @@ public class Projectile{
 			if(projectileSprite != null){
 				g.drawSprite(projectileSprite, x, y);
 			}
-			else{ //TODO Temporary shape placeholder
-				g.drawCircle(x, y, RADIUS);
+			else{ //Temporary shape placeholder
+				g.setColor(new Color(165, 42, 42, 1));
+				g.fillCircle(x, y, RADIUS);
 			}
 		}
 	}

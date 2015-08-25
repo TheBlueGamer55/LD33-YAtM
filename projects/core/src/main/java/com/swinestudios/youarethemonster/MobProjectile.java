@@ -38,8 +38,8 @@ public class MobProjectile{
 			if(projectileSprite != null){
 				g.drawSprite(projectileSprite, x, y);
 			}
-			else{ //TODO Temporary shape placeholder
-				g.drawCircle(x, y, RADIUS);
+			else{ //Temporary shape placeholder
+				//g.drawCircle(x, y, RADIUS);
 			}
 		}
 	}

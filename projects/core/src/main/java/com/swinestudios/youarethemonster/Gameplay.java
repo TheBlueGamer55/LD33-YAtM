@@ -23,6 +23,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 
 public class Gameplay implements GameScreen{
 
@@ -38,7 +39,8 @@ public class Gameplay implements GameScreen{
 
 	public ArrayList<Waypoint> waypoints;
 
-	public final int INITIAL_POINTS = 40;
+	//Total of 50 spawn points - initial is 10 * initial-tower-amount
+	public final int INITIAL_POINTS = TowerController.towerCost * 45; 
 
 	public ControllableMob player;
 	public CandyBase candyBase;
@@ -61,6 +63,9 @@ public class Gameplay implements GameScreen{
 	public Rectangle newWaveButton;
 	
 	public static Sound spawnSound = Gdx.audio.newSound(Gdx.files.internal("SpawnMobDarker.wav"));
+	public static Sprite spawnMobButton = new Sprite(new Texture(Gdx.files.internal("spawnMobButton.png")));
+	public static Sprite waveButton = new Sprite(new Texture(Gdx.files.internal("newWaveButton.png")));
+	
 
 	//Make sure that there are no accidental double-clicks
 	public boolean hasClicked = false;
@@ -84,14 +89,14 @@ public class Gameplay implements GameScreen{
 	public void initialise(GameContainer gc){
 		theme = Gdx.audio.newSound(Gdx.files.internal("gameBGM.ogg"));
 		try{
-			map = new TiledMap(Gdx.files.internal("testmap.tmx"));
+			map = new TiledMap(Gdx.files.internal("candymap.tmx"));
 		} catch (TiledException e) {
 			e.printStackTrace();
 		}
 		cursor = new Rectangle(Gdx.input.getX(), Gdx.input.getY(), 1, 1);
 		//TODO change width and height based on button sprite
-		mobSpawnButton = new Rectangle(Gdx.graphics.getWidth() - 60, Gdx.graphics.getHeight() - 60, 50, 32);
-		newWaveButton = new Rectangle(60, Gdx.graphics.getHeight() - 60, 50, 32);
+		mobSpawnButton = new Rectangle(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 60, 73, 23);
+		newWaveButton = new Rectangle(30, Gdx.graphics.getHeight() - 60, 73, 23);
 	}
 
 	@Override
@@ -132,10 +137,10 @@ public class Gameplay implements GameScreen{
 		if(map != null){
 			generateSolids(map);
 			generateWaypoints(map);
-			//TODO generateTowerSpawns(map);
+			generateTowerSpawns(map);
 		}
 
-		//TODO temporary code for testing
+		//temporary code for testing
 		//tempTower = new Tower(320, 250, this);
 		//towers.add(tempTower);
 
@@ -154,11 +159,11 @@ public class Gameplay implements GameScreen{
 		mobs.add(mob2);
 		mobs.add(mob3);
 
-		player = new ControllableMob(320, 240, this);
+		player = new ControllableMob(13 * 32, 29 * 32, this);
 		camX = player.x - Gdx.graphics.getWidth() / 2;
 		camY = player.y - Gdx.graphics.getHeight() / 2;
 		
-		candyBase = new CandyBase(34 * 32, 10 * 32, this);
+		candyBase = new CandyBase(43 * 32, 29 * 32, this);
 
 		//Input handling
 		InputMultiplexer multiplexer = new InputMultiplexer();
@@ -181,44 +186,49 @@ public class Gameplay implements GameScreen{
 		renderTowers(g);
 		renderProjectiles(g);
 		renderMobProjectiles(g);
-		//TODO temporary code - remove later
+		//temporary code - remove later
 		towerController.render(g);
-		for(int i = 0; i < solids.size(); i++){
+		/*for(int i = 0; i < solids.size(); i++){
 			solids.get(i).render(g);
 		}
 		for(int i = 0; i < waypoints.size(); i++){
 			g.setColor(Color.RED);
 			g.fillCircle(waypoints.get(i).x, waypoints.get(i).y, 2);
-		}
+		}*/
 
 		//TODO - UI graphics using sprites
+		g.setColor(Color.RED);
 		g.drawString("Wave Number: " + waveNum, camX + 4,  camY + 4);
 
-		g.drawRect(camX + mobSpawnButton.x, camY + mobSpawnButton.y, mobSpawnButton.width, mobSpawnButton.height);
-		g.drawString("Spawn", camX + mobSpawnButton.x, camY + mobSpawnButton.y);
-		g.drawString("mob", camX + mobSpawnButton.x, camY + mobSpawnButton.y + 14);
+		g.drawSprite(spawnMobButton, camX + mobSpawnButton.x, camY + mobSpawnButton.y);
+		//g.drawRect(camX + mobSpawnButton.x, camY + mobSpawnButton.y, mobSpawnButton.width, mobSpawnButton.height);
+		//g.drawString("Spawn", camX + mobSpawnButton.x, camY + mobSpawnButton.y);
+		//g.drawString("mob", camX + mobSpawnButton.x, camY + mobSpawnButton.y + 14);
 
-		g.drawRect(camX + newWaveButton.x, camY + newWaveButton.y, newWaveButton.width, newWaveButton.height);
-		g.drawString("New", camX + newWaveButton.x, camY + newWaveButton.y);
-		g.drawString("Wave", camX + newWaveButton.x, camY + newWaveButton.y + 14);
+		g.drawSprite(waveButton, camX + newWaveButton.x, camY + newWaveButton.y);
+		//g.drawRect(camX + newWaveButton.x, camY + newWaveButton.y, newWaveButton.width, newWaveButton.height);
+		//g.drawString("New", camX + newWaveButton.x, camY + newWaveButton.y);
+		//g.drawString("Wave", camX + newWaveButton.x, camY + newWaveButton.y + 14);
 		g.drawString("Mob amount left: " + mobCount, camX + newWaveButton.x, camY + newWaveButton.y - 14);
 
 		//TODO adjust UI for each menu
 		if(gameOver){
-			g.setColor(Color.WHITE);
+			g.setColor(Color.RED);
 			g.drawString("You died! Press Escape to go back to the main menu", camX + 160, camY + 240);
 		}
 		if(paused){
-			g.setColor(Color.WHITE);
+			g.setColor(Color.RED);
 			g.drawString("Are you sure you want to quit? Y or N", camX + 220, camY + 240);
 		}
 		if(gameWin){
-			g.setColor(Color.WHITE);
+			g.setColor(Color.RED);
 			g.drawString("Congratulations! It took you " + waveNum + " wave(s) to destroy the base!", camX + 200, camY + 240);
 		}
 		if(startingNewWave){
-			g.setColor(Color.WHITE);
-			g.drawString("Starting new wave in " + (maxWaveTimer - waveTimer), camX + 220, camY + 240);
+			String waveMessage = String.format("Starting new wave in %.2f", (maxWaveTimer - waveTimer));
+			g.setColor(Color.RED);
+			//g.drawString("Starting new wave in " + (maxWaveTimer - waveTimer), camX + 220, camY + 240);
+			g.drawString(waveMessage, camX + 220, camY + 220);
 		}
 	}
 
@@ -305,7 +315,7 @@ public class Gameplay implements GameScreen{
 	}
 
 	/*
-	 * TODO Starts a new wave of monsters (player's supplies reset)
+	 * Starts a new wave of monsters (player's supplies reset)
 	 */
 	public void startNewWave(){
 		waveNum++;

@@ -20,7 +20,7 @@ public class Block extends Rectangle{
 
 	public void render(Graphics g){
 		g.setColor(Color.GRAY);
-		g.fillRect(x, y, width, height);
+		g.drawRect(x, y, width, height);
 	}
 
 	public void update(float delta){

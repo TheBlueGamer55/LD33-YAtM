@@ -6,14 +6,14 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 
 public class CandyBase{
 
 	public float x, y;
 
-	public float health, maxHealth = 500; //TODO adjust later
+	public float health, maxHealth = 1000; //TODO adjust later
 
 	public final float healthBarMaxWidth = 64;
 	public final float healthBarHeight = 6;
@@ -25,7 +25,7 @@ public class CandyBase{
 	public final float SHOT_MAGNITUDE = 4.0f; //How strong a tower shoots a projectile
 	public final float SHOT_LIFETIME = 0.2f; //How long a projectile lasts
 
-	public final float SHOT_RATE = 6; //Shots per second
+	public final float SHOT_RATE = 8; //Shots per second
 	public float shotTimer, maxShotTimer;
 	
 	public Mob nearestMob;
@@ -48,7 +48,7 @@ public class CandyBase{
 		shotTimer = 0;
 		maxShotTimer = 1f / SHOT_RATE;
 		nearestControllableMob = level.player;
-		//towerSprite = new Sprite(new Texture(Gdx.files.internal("______.png")));
+		baseSprite = new Sprite(new Texture(Gdx.files.internal("cakeTowers.png")));
 		//adjustSprite(baseSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
 	}
@@ -58,16 +58,16 @@ public class CandyBase{
 			if(baseSprite != null){
 				g.drawSprite(baseSprite, x, y);
 			}
-			else{ //TODO Temporary shape placeholder
+			else{ //Temporary shape placeholder
 				g.setColor(Color.PURPLE);
 				g.drawCircle(x,  y, RADIUS / 4);
 				g.drawCircle(x,  y, RADIUS);
 			}
 			//Draw health bar
 			g.setColor(Color.RED);
-			g.fillRect(x - healthBarMaxWidth / 2, y + healthBarYOffset, healthBarMaxWidth, healthBarHeight);
+			g.fillRect(x, y + healthBarYOffset, healthBarMaxWidth, healthBarHeight);
 			g.setColor(Color.GREEN);
-			g.fillRect(x - healthBarMaxWidth / 2, y + healthBarYOffset, healthBarMaxWidth * (health / maxHealth), healthBarHeight);
+			g.fillRect(x, y + healthBarYOffset, healthBarMaxWidth * (health / maxHealth), healthBarHeight);
 		}
 	}
 
@@ -100,10 +100,6 @@ public class CandyBase{
 			if(health <= 0){
 				isActive = false;
 				level.gameWin = true;
-			}
-			//TODO debug code - remove later
-			if(Gdx.input.isKeyJustPressed(Keys.T)){
-				dealDamage(10);
 			}
 		}
 	}

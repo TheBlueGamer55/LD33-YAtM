@@ -6,9 +6,6 @@ import java.util.Random;
 import org.mini2Dx.core.geom.Point;
 import org.mini2Dx.core.graphics.Graphics;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-
 public class TowerController{
 
 	public boolean isActive;
@@ -19,7 +16,7 @@ public class TowerController{
 	public Gameplay level;
 	public String type;
 	public static float points = 0;
-	public final int towerCost = 10; //TODO adjust later
+	public static final int towerCost = 30; 
 
 	public TowerController(Gameplay level){
 		isActive = true;
@@ -27,28 +24,22 @@ public class TowerController{
 		type = "TowerController";
 		spawnPoints = new ArrayList<Point>();
 		random = new Random();
-		//TODO hard-coded spawnpoints - change later based on map
-		spawnPoints.add(new Point(10, 10));
+		//hard-coded spawnpoints - change later based on map
+		/*spawnPoints.add(new Point(10, 10));
 		spawnPoints.add(new Point(200, 10));
 		spawnPoints.add(new Point(400, 10));
 		spawnPoints.add(new Point(10, 200));
 		spawnPoints.add(new Point(200, 200));
-		spawnPoints.add(new Point(400, 200));
+		spawnPoints.add(new Point(400, 200));*/
 	}
 
 	public void render(Graphics g){
-		//TODO debug code - remove later
-		g.drawString(points + "", 0, 0);
+		
 	}
 
 	public void update(float delta){
-		//TODO adjust later so that building is not simply instantaneous
 		if(points >= towerCost){
 			spawnTower(towerCost);
-		}
-		//TODO debug code - remove later
-		if(Gdx.input.isKeyJustPressed(Keys.P)){
-			TowerController.points++;
 		}
 	}
 
@@ -65,8 +56,8 @@ public class TowerController{
 		}
 		if(isEmpty){
 			Tower t = new Tower(pos.getX(), pos.getY(), level);
-			//TODO testing code - remove later
-			t.setAutoMobsOnly(random.nextBoolean());
+			//esting code - remove later
+			//t.setAutoMobsOnly(random.nextBoolean());
 			level.towers.add(t);
 			points -= cost;
 		}

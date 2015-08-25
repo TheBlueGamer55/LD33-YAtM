@@ -8,7 +8,6 @@ import org.mini2Dx.core.graphics.Graphics;
 import org.mini2Dx.core.graphics.Sprite;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -25,10 +24,10 @@ public class Tower{
 	
 	public final int RADIUS = 96; //TODO should this be final?
 	public final int HITBOX_RADIUS = 20;
-	public final float SHOT_MAGNITUDE = 4.0f; //How strong a tower shoots a projectile
+	public final float SHOT_MAGNITUDE = 3.0f; //How strong a tower shoots a projectile
 	public final float SHOT_LIFETIME = 0.2f; //How long a projectile lasts
 
-	public final float SHOT_RATE = 6; //Shots per second
+	public final float SHOT_RATE = 5; //Shots per second
 	public float shotTimer, maxShotTimer;
 
 	public boolean isBeingBuilt;
@@ -67,7 +66,16 @@ public class Tower{
 		maxShotTimer = 1f / SHOT_RATE;
 		nearestControllableMob = level.player;
 		
-		setAutoMobsOnly(random.nextBoolean());
+		if(x > 32 * 27){
+			setAutoMobsOnly(random.nextBoolean());
+		}
+		else{
+			setAutoMobsOnly(false);
+		}
+		
+		if(x <= 32 * 27){
+			autoMobsOnly = false;
+		}
 		
 		//adjustSprite(towerSprite);
 		hitbox = new Circle(x, y, (int) RADIUS);
@@ -78,10 +86,10 @@ public class Tower{
 			if(towerSprite != null){
 				g.drawSprite(towerSprite, x - towerSprite.getWidth() / 2, y - towerSprite.getHeight() / 2);
 			}
-			//TODO Temporary shape placeholder
-			g.setColor(Color.GREEN);
+			//Temporary shape placeholder
+			/*g.setColor(Color.GREEN);
 			g.drawCircle(x,  y, RADIUS / 4);
-			g.drawCircle(x,  y, RADIUS);
+			g.drawCircle(x,  y, RADIUS);*/
 			
 			//Draw health bar
 			g.setColor(Color.RED);
@@ -89,7 +97,7 @@ public class Tower{
 			g.setColor(Color.GREEN);
 			g.fillRect(x - healthBarMaxWidth / 2, y + healthBarYOffset, healthBarMaxWidth * (health / maxHealth), healthBarHeight);
 			if(isBeingBuilt){
-				g.drawString("Building... " + (maxBuildingTime - buildingTimer), x, y + 6);
+				//g.drawString("Building... " + (maxBuildingTime - buildingTimer), x, y + 6);
 			}
 		}
 	}
@@ -143,10 +151,10 @@ public class Tower{
 				y = -500;
 				level.towers.remove(this);
 			}
-			//TODO debug code - remove later
-			if(Gdx.input.isKeyJustPressed(Keys.T)){
+			//Debug code - remove later
+			/*if(Gdx.input.isKeyJustPressed(Keys.T)){
 				dealDamage(10);
-			}
+			}*/
 		}
 	}
 
